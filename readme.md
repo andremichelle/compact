@@ -4,6 +4,18 @@
 
 ![screenshot.png](screenshot.png)
 
+[Open in browser ⏏︎](https://andremichelle.io/compact)
+
+Tested on
+
+* Desktop (Mac)
+    * Chrome
+    * Firefox
+    * Safari
+* Mobile (IOS)
+    * Chrome
+    * Safari
+
 #### Build
 
 * `npm install` (install all dependencies)
