@@ -47,27 +47,32 @@ export const App = () => {
         page = router(event.newURL)
         trackListUpdater.get().update()
     }
-    const searchPage = <SearchPage playback={playback} /> // keep it here to be persistent
+
+    // keep them here to be persistent
+    const artistCards = <ArtistCards keys={artists} />
+    const searchPage = <SearchPage playback={playback} />
     return (
         <main className={Html.adoptStyleSheet(css, "audiotool")}>
             <Player playback={playback} />
             <section className="content">
-                <Hotspot ref={trackListUpdater} render={() => page.match({
-                    none: () => <ArtistCards keys={artists} />,
-                    some: page => {
-                        if (page.type === "artists") {
-                            return <ArtistCards keys={artists} />
-                        } else if (page.type === "search") {
-                            return searchPage
-                        } else if (page.type === "tracks") {
-                            if (page.request.scope === "playlists") {
-                                return <Playlists request={page.request} />
-                            } else {
-                                return <TrackList playback={playback} request={page.request} />
+                <Hotspot ref={trackListUpdater} render={() => {
+                    return page.match({
+                        none: () => artistCards,
+                        some: page => {
+                            if (page.type === "artists") {
+                                return artistCards
+                            } else if (page.type === "search") {
+                                return searchPage
+                            } else if (page.type === "tracks") {
+                                if (page.request.scope === "playlists") {
+                                    return <Playlists request={page.request} />
+                                } else {
+                                    return <TrackList playback={playback} request={page.request} />
+                                }
                             }
                         }
-                    }
-                })} />
+                    })
+                }} />
             </section>
             <footer>
                 <span>Coded by andré michelle・</span>
