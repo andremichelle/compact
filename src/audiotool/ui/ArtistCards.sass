@@ -1,0 +1,50 @@
+@import ../../sass/mixin
+@import common
+
+component
+  padding: 1em 0
+  width: 100%
+  display: grid
+  grid-template-columns: repeat(5, 1fr)
+  @include mobile
+    grid-template-columns: repeat(2, 1fr)
+  gap: 1em
+
+  > button
+    min-width: 100%
+    min-height: 100%
+    font-family: inherit
+    font-size: 0.75em
+    display: flex
+    flex-direction: column
+    border: none
+    background: none
+    outline: none
+    cursor: pointer
+    column-gap: 1em
+    align-items: center
+    color: gray
+    position: relative
+
+    > img
+      min-width: 100%
+      max-width: 100%
+      aspect-ratio: 1 / 1
+      border-radius: 0.5em 0.5em 0 0
+      pointer-events: none
+      background-color: $PlaceHolderColor
+
+    > div
+      display: flex
+      min-width: 100%
+      min-height: 2em
+      align-items: center
+      overflow: hidden
+      text-overflow: ellipsis
+      white-space: nowrap
+      pointer-events: none
+      color: white
+      padding: 0 0.5em
+      border-radius: 0 0 0.5em 0.5em
+      background-color: rgba(black, 0.4)
+      box-sizing: border-box

@@ -1,0 +1,30 @@
+@import ../../sass/mixin
+@import common
+
+component
+  display: flex
+  flex-direction: column
+  width: 100%
+  height: 100%
+  overflow: hidden scroll
+  --inner-width: 75%
+  @include mobile
+    --inner-width: 96%
+
+  > section.content
+    margin: 0 auto
+    display: flex
+    flex-direction: column
+    flex: 1 0 0
+    width: var(--inner-width)
+
+  > footer
+    flex: 0 0 2em
+    bottom: 0
+    position: sticky
+    display: flex
+    align-items: center
+    justify-content: center
+    font-size: 0.75em
+    color: rgba(white, 0.2)
+    background-color: $BlackColor

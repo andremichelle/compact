@@ -1,0 +1,131 @@
+@import common
+
+component
+  z-index: 2
+  top: 0
+  position: sticky
+  display: flex
+  width: 100%
+  justify-content: center
+  background: $BlackColor
+  box-shadow: 0 2em 2em 0 rgba(black, 0.2), 0 0.125em 0.125em 0 rgba(black, 0.2)
+
+  > div.center
+    margin: 1em 0
+    font-size: 1.25em
+    display: grid
+    align-items: center
+    grid-template-columns: 5em 1fr
+    width: var(--inner-width)
+    column-gap: 1em
+
+    > header.cover
+      height: 5em
+      display: flex
+      position: relative
+
+      > img
+        height: 100%
+        aspect-ratio: 1 / 1
+        object-fit: contain
+        position: absolute
+        border-radius: 0.5em
+
+        &:nth-child(1)
+          background-color: $PlaceHolderColor
+          @include audiotool
+
+        &:nth-child(2)
+          mix-blend-mode: hard-light
+          filter: blur(16px) opacity(75%)
+
+      &.active:hover > div.state
+        visibility: visible
+
+      > div.state
+        top: 0
+        left: 0
+        width: 100%
+        height: 100%
+        position: absolute
+        background-size: 50%
+        background-color: rgba(black, 0.2)
+        visibility: hidden
+        cursor: pointer
+
+        @include play
+
+        &.playing
+          @include pause
+
+        &.buffering
+          @include buffering
+
+    > div.info
+      display: flex
+      flex-direction: column
+      row-gap: 0.25em
+      justify-content: space-around
+      overflow: hidden
+
+      > div.top
+        display: flex
+        flex-direction: row
+        column-gap: 0.5em
+
+        > div.meta
+          flex: 1 0 0
+          display: flex
+          flex-direction: column
+          row-gap: 0.25em
+          overflow: hidden
+
+          > div, a
+            flex: 0 0 1.25em
+
+            &:empty
+              border-radius: 0.125em
+              background-color: $PlaceHolderColor
+
+          > a.name
+            color: $WhiteColor
+            white-space: nowrap
+            overflow: hidden
+            text-overflow: ellipsis
+            text-decoration: none
+
+        > nav
+          display: flex
+          column-gap: 0.5em
+
+          > button
+            flex: 1 0 0
+            margin: 0
+            padding: 0
+            font-family: inherit
+            font-size: inherit
+            appearance: none
+            border: none
+            background: none
+            outline: none
+            color: $PlaceHolderColor
+            cursor: pointer
+
+            &:hover
+              color: rgba(white, 0.7)
+
+            &:active
+              color: white
+
+            > svg
+              width: 2em
+              height: 2em
+              pointer-events: none
+
+      > div.time
+        height: 1em
+        display: flex
+        align-items: center
+        column-gap: 1em
+        justify-content: space-between
+        font-size: 0.75em

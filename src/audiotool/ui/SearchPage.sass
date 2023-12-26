@@ -1,0 +1,56 @@
+@keyframes blink
+  from
+    background-position-x: 0%
+  to
+    background-position-x: 200%
+
+component
+  flex: 1 0 0
+  padding: 2em 0
+  display: flex
+  flex-direction: column
+
+  > input[type=search]
+    width: 100%
+    font-size: 1.5em
+    font-family: inherit
+    color: white
+    border: none
+    outline: none
+    padding: 0.5em
+    border-radius: 0.5em
+    background-color: rgba(black, 0.4)
+
+    &.searching
+      background: linear-gradient(to right, transparent 0%, rgba(black, 0.2) 50%, transparent 100%)
+      background-size: 200%
+      animation: blink 500ms backwards infinite linear
+
+  > div.result
+    flex: 1 0 0
+    margin: 1em 0
+    padding: 0 2em 0 0
+    display: flex
+    flex-direction: column
+    row-gap: 0.5em
+    overflow: hidden auto
+
+    > div
+      display: flex
+      align-items: center
+      column-gap: 1em
+
+      > a
+        white-space: nowrap
+        overflow: hidden
+        text-overflow: ellipsis
+        text-decoration: none
+
+      > svg
+        fill: currentColor
+        opacity: 0.25
+        min-width: 1.25em
+        min-height: 1.25em
+        max-width: 1.25em
+        max-height: 1.25em
+        pointer-events: none

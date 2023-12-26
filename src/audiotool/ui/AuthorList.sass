@@ -1,0 +1,12 @@
+component
+  white-space: nowrap
+  overflow: hidden
+  text-overflow: ellipsis
+  height: 1.25em
+
+  > a
+    width: max-content
+    text-decoration: none
+
+    &:not(:last-child):after
+      content: ", "
