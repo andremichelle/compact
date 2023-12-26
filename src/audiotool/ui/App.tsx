@@ -38,7 +38,7 @@ const artists = [
     "maddragon", "iwanbeflylo23", "martinstoj", "anotherevolution", "exist", "puppiez1006", "pimpmastaj"
 ]
 
-document.title = "audiotool music browser"
+document.title = "audiotool compact・music browser"
 
 export const App = () => {
     let page: Option<Page> = router(location.href)
