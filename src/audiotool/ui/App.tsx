@@ -113,6 +113,9 @@ window.addEventListener("keydown", (event: KeyboardEvent) => {
     } else if (event.code === "ArrowLeft") {
         playback.prevTrack()
     } else if (event.code === "Space") {
+        if (event.target instanceof HTMLInputElement) {
+            return
+        }
         event.preventDefault()
         playback.togglePlay()
     }
