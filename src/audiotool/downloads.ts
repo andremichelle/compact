@@ -1,13 +1,13 @@
-import { ApiV1 } from "./api.v1.ts"
 import { Option } from "@common/option.ts"
+import { Track } from "./api.ts"
 
-type DownloadedTrack = {
-    id: string
+export type DownloadedTrack = {
+    key: string
     name: string
     created: number
     mp3Blob: Blob
     coverBlob: Blob
-    collaborators: ReadonlyArray<{ key: string, name: string, avatar: string }>
+    collaborators: ReadonlyArray<{ key: string, name: string }>
     bpm: number
     genreKey: string
     genreName: string
@@ -24,7 +24,7 @@ export class Downloads {
         request.onupgradeneeded = (_event: IDBVersionChangeEvent) => {
             const db: IDBDatabase = request.result
             if (!db.objectStoreNames.contains(storeName)) {
-                db.createObjectStore(storeName, { keyPath: "id" })
+                db.createObjectStore(storeName, { keyPath: "key" })
             }
         }
         request.onerror = () => reject(request.error)
@@ -47,13 +47,13 @@ export class Downloads {
         this.#map = new Map<string, DownloadedTrack>()
     }
 
-    async add(track: ApiV1.Track): Promise<void> {
+    async add(track: Track): Promise<void> {
         return Promise.all([
-            fetch(ApiV1.coverURL(track)).then(x => x.blob()),
-            fetch(ApiV1.playMP3(track.key)).then(x => x.blob())
-        ]).then(([coverBlob, mp3Blob]) => {
+            fetch(track.mp3Url).then(x => x.blob()),
+            fetch(track.coverUrl).then(x => x.blob())
+        ]).then(([mp3Blob, coverBlob]) => {
             const downloaded: DownloadedTrack = {
-                id: track.key, mp3Blob, coverBlob,
+                key: track.key, mp3Blob, coverBlob,
                 bpm: track.bpm,
                 name: track.name,
                 created: track.created,
@@ -87,7 +87,7 @@ export class Downloads {
                     resolve()
                 } else {
                     const downloaded = result.value as DownloadedTrack
-                    this.#map.set(downloaded.id, downloaded)
+                    this.#map.set(downloaded.key, downloaded)
                     result.continue()
                 }
             }

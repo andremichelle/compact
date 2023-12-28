@@ -2,12 +2,11 @@ import { Option } from "@common/option.ts"
 import { Notifier } from "@common/observers.ts"
 import { isDefined, Procedure, unitValue } from "@common/lang.ts"
 import { Subscription } from "@common/terminable.ts"
-import { ApiV1 } from "./api.v1.ts"
-import { Api } from "./api.ts"
+import { Api, Track } from "./api.ts"
 
 export type PlaybackEvent = {
     state: "changed"
-    track: Option<ApiV1.Track>
+    track: Option<Track>
 } | {
     state: "buffering"
 } | {
@@ -31,7 +30,7 @@ export class Playback {
     readonly #audio: HTMLAudioElement
     readonly #notifier: Notifier<PlaybackEvent>
 
-    #active: Option<ApiV1.Track> = Option.None
+    #active: Option<Track> = Option.None
     #state: PlaybackEvent["state"] = "idle"
 
     constructor(api: Api) {
@@ -41,7 +40,7 @@ export class Playback {
         this.#notifier = new Notifier<PlaybackEvent>()
     }
 
-    toggle(track: ApiV1.Track): void {
+    toggle(track: Track): void {
         if (this.isActive(track)) {
             if (this.#audio.paused) {
                 this.#audio.play().catch(() => {})
@@ -64,7 +63,7 @@ export class Playback {
     prevTrack(): void {this.#active.ifSome(track => {if (track.prev) {this.toggle(track.prev)}})}
     togglePlay(): void {this.#active.ifSome(track => {this.toggle(track)})}
 
-    playTrackFrom(track: ApiV1.Track, progress: unitValue): void {
+    playTrackFrom(track: Track, progress: unitValue): void {
         const durationInSeconds = track.duration / 1000
         if (this.isActive(track)) {
             this.#notify({
@@ -91,8 +90,8 @@ export class Playback {
     subscribe(observer: Procedure<PlaybackEvent>): Subscription {return this.#notifier.subscribe(observer)}
 
     get state(): PlaybackEvent["state"] {return this.#state}
-    get active(): Option<ApiV1.Track> {return this.#active}
-    set active(track: Option<ApiV1.Track>) {
+    get active(): Option<Track> {return this.#active}
+    set active(track: Option<Track>) {
         this.#unwatchAudio()
         this.#active = track
         this.#active.ifSome(track => {
@@ -102,10 +101,10 @@ export class Playback {
         this.#notify({ state: "changed", track })
     }
 
-    isActive(track: ApiV1.Track): boolean {return this.#active.unwrapOrNull()?.key === track.key}
-    isDownloaded(track: ApiV1.Track): boolean {return this.#api.isOfflineAvailable(track)}
+    isActive(track: Track): boolean {return this.#active.unwrapOrNull()?.key === track.key}
+    isDownloaded(track: Track): boolean {return this.#api.isOfflineAvailable(track)}
 
-    #watchAudio(track: ApiV1.Track): void {
+    #watchAudio(track: Track): void {
         this.#audio.onended = () => this.active.ifSome(track => {if (isDefined(track.next)) {this.toggle(track.next)}})
         this.#audio.onplay = () => this.#notify({ state: this.#canPlayImmediately() ? "playing" : "buffering" })
         this.#audio.onpause = () => this.#notify({ state: "paused" })

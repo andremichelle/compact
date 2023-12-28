@@ -6,22 +6,21 @@ import { Html } from "@ui/html.ts"
 import { int } from "@common/lang.ts"
 import css from "./TrackList.sass?inline"
 import { ListHeader } from "./ListHeader.tsx"
-import { ApiV1 } from "../api.v1.ts"
-import { Api } from "../api.ts"
+import { Api, Track, TrackListData, TrackListRequest } from "../api.ts"
 
 const className = Html.adoptStyleSheet(css, "track-list")
 
 export type TrackListProps = {
     api: Api
     playback: Playback
-    request: ApiV1.TrackListRequest
+    request: TrackListRequest
 }
 
 export const TrackList = ({ api, playback, request }: TrackListProps) => {
     let index: int = 0
     const element: HTMLElement = <section className={className} />
-    const fetch = (request: ApiV1.TrackListRequest) => request.fetch()
-        .then((response: ApiV1.TrackListResponse) => {
+    const fetch = (request: TrackListRequest) => request.fetch()
+        .then((response: TrackListData) => {
             if (!element.isConnected) {return}
             if (index === 0) {
                 element.append(
@@ -33,19 +32,18 @@ export const TrackList = ({ api, playback, request }: TrackListProps) => {
                             } : undefined} />
                 )
             }
-            const tracks: ReadonlyArray<ApiV1.Track> = response.tracks
-            element.append(...tracks.map((track: ApiV1.Track) => (
+            const tracks: ReadonlyArray<Track> = response.tracks
+            element.append(...tracks.map((track: Track) => (
                 <TrackListItem api={api}
                                playback={playback}
                                track={track}
                                index={index++} />
             )))
-            const nextInfo = response.next
-            if (nextInfo === undefined) {return}
+            if (!response.hasMore()) {return}
             const moreEntriesIndicator = <LoadingIndicator title="loading more tracks" />
             const observer = new IntersectionObserver(([entry]) => {
                 if (entry.isIntersecting) {
-                    fetch({ ...request, fetch: () => ApiV1.fetchTracks(nextInfo, tracks.at(-1)) })
+                    fetch({ ...request, fetch: () => response.nextPage() })
                         .finally(() => moreEntriesIndicator.remove())
                     observer.disconnect()
                 }

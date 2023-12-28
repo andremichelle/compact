@@ -3,14 +3,16 @@ import { Inject } from "@jsx/inject.ts"
 import { ApiV2 } from "../api.v2.ts"
 import css from "./SearchPage.sass?inline"
 import { Playback } from "../playback.ts"
+import { Api } from "../api.ts"
 
 const className = Html.adoptStyleSheet(css, "search-page")
 
 export type SearchPageProps = {
+    api: Api
     playback: Playback
 }
 
-export const SearchPage = ({ playback }: SearchPageProps) => {
+export const SearchPage = ({ api, playback }: SearchPageProps) => {
     const inputRef = Inject.ref<HTMLInputElement>()
     const resultRef = Inject.ref<HTMLDivElement>()
     const handleInput = (() => {
@@ -29,7 +31,7 @@ export const SearchPage = ({ playback }: SearchPageProps) => {
                     ApiV2.searchUser(query, 10, abortController.signal),
                     ApiV2.searchPlaylists(query, 10, abortController.signal),
                     ApiV2.searchTracks(query, 10, abortController.signal)
-                        .then(v2 => Promise.all(v2.map(track => ApiV2.trackToV1(track))))
+                        .then(v2 => Promise.all(v2.map(track => api.fetchTrack(track.id))))
                 ])
                 const result = resultRef.get()
                 Html.empty(result)

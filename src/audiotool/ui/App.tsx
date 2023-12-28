@@ -7,26 +7,11 @@ import { Player } from "./Player.tsx"
 import { TrackList } from "./TrackList.tsx"
 import { Playlists } from "./Playlists.tsx"
 import { ArtistCards } from "./ArtistCards.tsx"
-import { Page, router } from "../router.ts"
+import { Path, router } from "../router.ts"
 import { SearchPage } from "./SearchPage.tsx"
-import { ApiV1 } from "../api.v1.ts"
 import css from "./App.sass?inline"
 import { Api } from "../api.ts"
-
-const artists = [
-    "sandburgen", "kepz", "kurpingspace2", "sumad", "dabrig", "1n50mn1ac", "brainwalker", "retrorhythm", "eliatrix",
-    "trancefreak12", "melancolia", "christian-chrom", "hipposandos", "markolmx", "ole", "chackoflakko", "sharkyyo",
-    "banterclaus", "jordynth", "ewan_mcculloch", "snowfire", "shakey63", "meastrostromea", "jetdarc", "skyboundzoo",
-    "borozo", "intracktion", "flying-baby-seal", "structure", "yafeelma", "nominal", "tophat", "fbs_cgman", "cgman",
-    "oscarollie", "almate", "offbeatninja123", "cuddlexdude", "foxyfennec", "daftwill", "jambam", "tottenhauser",
-    "amoeba", "opaqity", "808chunk", "joa", "trulsenstad", "tornsage", "infyuthsion", "nick123456", "beat123",
-    "frigolito", "xavrockbeats", "nmgbeats", "pandasparks", "crazydruminator", "dove", "musicmanpw", "trance10",
-    "vistamista", "djsolace1000", "naswalt", "mark-lewis_ndikintum", "synthinox", "traptaco", "dublion", "crashwarrior",
-    "farcio", "inxile412", "zerod", "bluedude", "leadenshrew", "questionone", "ola", "heisten", "universecosmic",
-    "no-worries-atmosphere", "rnzr", "nick123456", "physik", "zonemusic", "untamed", "theclient", "dracogotwings",
-    "tomderry", "themp20q", "djcandie", "tteerabeats", "jewan", "31pablo", "looper", "dillonco", "callkay",
-    "maddragon", "iwanbeflylo23", "martinstoj", "anotherevolution", "exist", "puppiez1006", "pimpmastaj"
-]
+import { artists } from "../artists.ts"
 
 document.title = "audiotool compact・music browser"
 
@@ -40,14 +25,14 @@ export const App = ({ playback, api }: AppProps) => {
     track.ifSome(async (key: string) => {
         params.delete("track")
         history.replaceState(null, "", url)
-        playback.active = Option.wrap(await ApiV1.fetchTrack(key))
+        playback.active = Option.wrap(await api.fetchTrack(key))
     })
 
-    // listen to page changes
-    let page: Option<Page> = router(location.href)
+    // listen to path changes
+    let path: Option<Path> = router(location.href)
     const trackListUpdater = Inject.ref<HotspotUpdater>()
     window.onhashchange = (event: HashChangeEvent) => {
-        page = router(event.newURL)
+        path = router(event.newURL)
         trackListUpdater.get().update()
     }
 
@@ -92,26 +77,28 @@ export const App = ({ playback, api }: AppProps) => {
 
     // keep them here to be persistent
     const artistCards = <ArtistCards keys={artists} />
-    const searchPage = <SearchPage playback={playback} />
+    const searchPage = <SearchPage api={api} playback={playback} />
     return (
         <main className={Html.adoptStyleSheet(css, "audiotool")}>
             <Player api={api} playback={playback} />
             <section className="content">
                 <Hotspot ref={trackListUpdater} render={() => {
-                    return page.match({
+                    return path.match({
                         none: () => artistCards,
-                        some: page => {
-                            if (page.type === "artists") {
+                        some: path => {
+                            if (path.root === "artists") {
                                 return artistCards
-                            } else if (page.type === "search") {
+                            } else if (path.root === "search") {
                                 return searchPage
-                            } else if (page.type === "tracks") {
-                                if (page.request.scope === "playlists") {
-                                    return <Playlists request={page.request} />
+                            } else if (path.root === "downloaded") {
+                                return <div>Downloaded Tracks</div>
+                            } else if (path.root === "tracks") {
+                                if (path.request.scope === "playlists") {
+                                    return <Playlists request={path.request} />
                                 } else {
                                     return <TrackList api={api}
                                                       playback={playback}
-                                                      request={page.request} />
+                                                      request={path.request} />
                                 }
                             }
                         }

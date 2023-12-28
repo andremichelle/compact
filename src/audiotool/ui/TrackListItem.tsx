@@ -3,8 +3,7 @@ import { dateToString, timespanToString } from "../time-conversion.ts"
 import { Playback } from "../playback.ts"
 import { int } from "@common/lang.ts"
 import { Html } from "@ui/html.ts"
-import { ApiV1 } from "../api.v1.ts"
-import { Api } from "../api.ts"
+import { Api, Track } from "../api.ts"
 import css from "./TrackListItem.sass?inline"
 
 const className = Html.adoptStyleSheet(css, "track-list-item")
@@ -12,7 +11,7 @@ const className = Html.adoptStyleSheet(css, "track-list-item")
 export type TrackListItemProps = {
     api: Api
     playback: Playback
-    track: ApiV1.Track
+    track: Track
     index: int
 }
 

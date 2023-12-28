@@ -6,9 +6,8 @@ import { Procedure } from "@common/lang.ts"
 import { AuthorList } from "./AuthorList.tsx"
 import { PlaybackProgress } from "./PlaybackProgress.tsx"
 import { timespanToString } from "../time-conversion.ts"
-import { ApiV1 } from "../api.v1.ts"
 import { shareURL } from "../router.ts"
-import { Api } from "../api.ts"
+import { Api, User } from "../api.ts"
 
 export type PlayerProps = { api: Api, playback: Playback }
 
@@ -20,7 +19,7 @@ export const Player = ({ api, playback }: PlayerProps) => {
     const trackName = Inject.text("")
     const playbackElapsed = Inject.text("00:00")
     const playbackDuration = Inject.text("00:00")
-    const populateUserList = Inject.ref<Procedure<ReadonlyArray<ApiV1.User>>>()
+    const populateUserList = Inject.ref<Procedure<ReadonlyArray<User>>>()
     const element = (
         <section className={Html.adoptStyleSheet(css, "player")}>
             <div className="center">
@@ -38,6 +37,11 @@ export const Player = ({ api, playback }: PlayerProps) => {
                             <AuthorList populate={populateUserList} users={[]} />
                         </div>
                         <nav>
+                            <button onclick={() => location.hash = "downloaded"} title="Show downloaded tracks">
+                                <svg>
+                                    <use href="#downloaded"></use>
+                                </svg>
+                            </button>
                             <button onclick={() => shareURL(playback.active)} title="Copy URL to clipboard">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                     <path
