@@ -4,6 +4,9 @@ import { Html } from "@ui/html.ts"
 export namespace ApiV1 {
     export const URL = "https://api.audiotool.com"
 
+    export const playMP3 = (key: string): string => `${URL}/track/${key}/play.mp3?ref=compact`
+    export const coverURL = (track: Track): string => `${location.protocol}${track.coverUrl ?? track.snapshotUrl}`
+
     export type Track = {
         key: string
         name: string

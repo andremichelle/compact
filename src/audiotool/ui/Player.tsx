@@ -8,10 +8,11 @@ import { PlaybackProgress } from "./PlaybackProgress.tsx"
 import { timespanToString } from "../time-conversion.ts"
 import { ApiV1 } from "../api.v1.ts"
 import { shareURL } from "../router.ts"
+import { Api } from "../api.ts"
 
-export type PlayerProps = { playback: Playback }
+export type PlayerProps = { api: Api, playback: Playback }
 
-export const Player = ({ playback }: PlayerProps) => {
+export const Player = ({ api, playback }: PlayerProps) => {
     const headerClasses = Inject.classes("cover")
     const stateClasses = Inject.classes("state")
     const coverHref = Inject.attribute(Html.EmptyGif)
@@ -80,14 +81,26 @@ export const Player = ({ playback }: PlayerProps) => {
                     playbackDuration.value = timespanToString(0)
                     headerClasses.remove("active")
                     profileLink.value = "#"
+
+                    const favLink = document.querySelector("link[rel=icon]")
+                    if (favLink !== null) {
+                        favLink.setAttribute("type", "image/svg+xml")
+                        favLink.setAttribute("href", "favicon.svg")
+                    }
                 },
                 some: track => {
-                    coverHref.value = `${location.protocol}${track.coverUrl ?? track.snapshotUrl}`
+                    coverHref.value = api.fetchCover(track)
                     trackName.value = track.name
                     populateUserList.get()(track.collaborators)
                     playbackDuration.value = timespanToString(track.duration)
                     headerClasses.add("active")
                     profileLink.value = `https://www.audiotool.com/track/${track.key}`
+
+                    const favLink = document.querySelector("link[rel=icon]")
+                    if (favLink !== null) {
+                        favLink.setAttribute("type", "image")
+                        favLink.setAttribute("href", api.fetchCover(track))
+                    }
                 }
             })
         } else if (event.state === "progress") {

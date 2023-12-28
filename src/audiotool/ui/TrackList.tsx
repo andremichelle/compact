@@ -7,15 +7,17 @@ import { int } from "@common/lang.ts"
 import css from "./TrackList.sass?inline"
 import { ListHeader } from "./ListHeader.tsx"
 import { ApiV1 } from "../api.v1.ts"
+import { Api } from "../api.ts"
 
 const className = Html.adoptStyleSheet(css, "track-list")
 
 export type TrackListProps = {
+    api: Api
     playback: Playback
     request: ApiV1.TrackListRequest
 }
 
-export const TrackList = ({ playback, request }: TrackListProps) => {
+export const TrackList = ({ api, playback, request }: TrackListProps) => {
     let index: int = 0
     const element: HTMLElement = <section className={className} />
     const fetch = (request: ApiV1.TrackListRequest) => request.fetch()
@@ -33,7 +35,8 @@ export const TrackList = ({ playback, request }: TrackListProps) => {
             }
             const tracks: ReadonlyArray<ApiV1.Track> = response.tracks
             element.append(...tracks.map((track: ApiV1.Track) => (
-                <TrackListItem playback={playback}
+                <TrackListItem api={api}
+                               playback={playback}
                                track={track}
                                index={index++} />
             )))

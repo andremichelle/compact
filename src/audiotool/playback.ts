@@ -3,6 +3,7 @@ import { Notifier } from "@common/observers.ts"
 import { isDefined, Procedure, unitValue } from "@common/lang.ts"
 import { Subscription } from "@common/terminable.ts"
 import { ApiV1 } from "./api.v1.ts"
+import { Api } from "./api.ts"
 
 export type PlaybackEvent = {
     state: "changed"
@@ -26,13 +27,15 @@ export type PlaybackEvent = {
 }
 
 export class Playback {
+    readonly #api: Api
     readonly #audio: HTMLAudioElement
     readonly #notifier: Notifier<PlaybackEvent>
 
     #active: Option<ApiV1.Track> = Option.None
     #state: PlaybackEvent["state"] = "idle"
 
-    constructor() {
+    constructor(api: Api) {
+        this.#api = api
         this.#audio = new Audio()
         this.#audio.crossOrigin = "true"
         this.#notifier = new Notifier<PlaybackEvent>()
@@ -93,13 +96,14 @@ export class Playback {
         this.#unwatchAudio()
         this.#active = track
         this.#active.ifSome(track => {
-            this.#audio.src = `https://api.audiotool.com/track/${track.key}/play.mp3`
+            this.#audio.src = this.#api.fetchMP3(track)
             this.#watchAudio(track)
         })
         this.#notify({ state: "changed", track })
     }
 
     isActive(track: ApiV1.Track): boolean {return this.#active.unwrapOrNull()?.key === track.key}
+    isDownloaded(track: ApiV1.Track): boolean {return this.#api.isOfflineAvailable(track)}
 
     #watchAudio(track: ApiV1.Track): void {
         this.#audio.onended = () => this.active.ifSome(track => {if (isDefined(track.next)) {this.toggle(track.next)}})
