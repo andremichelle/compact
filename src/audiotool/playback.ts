@@ -102,7 +102,6 @@ export class Playback {
     }
 
     isActive(track: Track): boolean {return this.#active.unwrapOrNull()?.key === track.key}
-    isDownloaded(track: Track): boolean {return this.#api.isOfflineAvailable(track)}
 
     #watchAudio(track: Track): void {
         this.#audio.onended = () => this.active.ifSome(track => {if (isDefined(track.next)) {this.toggle(track.next)}})

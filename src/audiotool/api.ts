@@ -131,7 +131,5 @@ export class Api {
         })
     }
 
-    isOfflineAvailable(track: Track): boolean {return this.#downloads.get(track.key).nonEmpty()}
-
-    makeOfflineAvailable(track: Track): Promise<void> {return this.#downloads.add(track)}
+    get downloads(): Downloads {return this.#downloads}
 }

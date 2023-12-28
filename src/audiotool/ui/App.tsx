@@ -12,6 +12,7 @@ import { SearchPage } from "./SearchPage.tsx"
 import css from "./App.sass?inline"
 import { Api } from "../api.ts"
 import { artists } from "../artists.ts"
+import { DownloadedTracks } from "./DownloadedTracks.tsx"
 
 document.title = "audiotool compact・music browser"
 
@@ -61,6 +62,22 @@ export const App = ({ playback, api }: AppProps) => {
         }
     })
 
+    api.downloads.subscribe(event => {
+        if (event.type === "added") {
+            document.querySelectorAll(`[data-track-key="${event.key}"]`)
+                .forEach(element => {
+                    element.classList.remove("downloading")
+                    element.classList.add("downloaded")
+                })
+        } else if (event.type === "removed") {
+            document.querySelectorAll(`[data-track-key="${event.key}"]`)
+                .forEach(element => element.classList.remove("downloaded"))
+        } else if (event.type === "fetching") {
+            document.querySelectorAll(`[data-track-key="${event.key}"]`)
+                .forEach(element => element.classList.add("downloading"))
+        }
+    })
+
     window.addEventListener("keydown", (event: KeyboardEvent) => {
         if (event.code === "ArrowRight") {
             playback.nextTrack()
@@ -91,7 +108,7 @@ export const App = ({ playback, api }: AppProps) => {
                             } else if (path.root === "search") {
                                 return searchPage
                             } else if (path.root === "downloaded") {
-                                return <div>Downloaded Tracks</div>
+                                return <DownloadedTracks api={api} playback={playback} />
                             } else if (path.root === "tracks") {
                                 if (path.request.scope === "playlists") {
                                     return <Playlists request={path.request} />

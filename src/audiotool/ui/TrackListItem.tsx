@@ -30,7 +30,7 @@ export const TrackListItem = ({ api, playback, track, index }: TrackListItemProp
                 classes.push("playing")
             }
         }
-        if (api.isOfflineAvailable(track)) {
+        if (api.downloads.get(track.key).nonEmpty()) {
             classes.push("downloaded")
         }
         return classes.join(" ")
@@ -41,7 +41,10 @@ export const TrackListItem = ({ api, playback, track, index }: TrackListItemProp
                 <span className="index">{index + 1}</span>
             </button>
             <img src={api.fetchCover(track)}
-                 onclick={() => api.makeOfflineAvailable(track)} />
+                 onclick={(event: MouseEvent) =>
+                     event.shiftKey
+                         ? api.downloads.remove(track)
+                         : api.downloads.download(track)} />
             <div className="names">
                 <div className="track" onclick={toggleTrackHandler}>
                     <svg>

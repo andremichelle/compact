@@ -1,5 +1,8 @@
 import { Option } from "@common/option.ts"
 import { Track } from "./api.ts"
+import { unitValue } from "@common/lang.ts"
+import { Notifier, Observer } from "@common/observers.ts"
+import { Subscription } from "@common/terminable.ts"
 
 export type DownloadedTrack = {
     key: string
@@ -15,6 +18,11 @@ export type DownloadedTrack = {
 }
 
 const storeName = "tracks"
+
+export type DownloadEvent =
+    | { type: "fetching", key: string, progress: unitValue }
+    | { type: "added", key: string }
+    | { type: "removed", key: string }
 
 export class Downloads {
     static readonly init = async (): Promise<Downloads> => new Promise((resolve, reject) => {
@@ -40,18 +48,25 @@ export class Downloads {
     })
 
     readonly #id: IDBDatabase
+    readonly #notifier: Notifier<DownloadEvent>
     readonly #map: Map<string, DownloadedTrack>
 
     private constructor(id: IDBDatabase) {
         this.#id = id
+        this.#notifier = new Notifier<DownloadEvent>()
         this.#map = new Map<string, DownloadedTrack>()
     }
 
-    async add(track: Track): Promise<void> {
+    subscribe(observer: Observer<DownloadEvent>): Subscription {return this.#notifier.subscribe(observer)}
+
+    async download(track: Track): Promise<void> {
+        // TODO Test if they are already downloading
+        if (this.#map.has(track.key)) {return Promise.reject("Already downloaded")}
+        this.#notifier.notify({ type: "fetching", key: track.key, progress: 0.0 })
         return Promise.all([
             fetch(track.mp3Url).then(x => x.blob()),
             fetch(track.coverUrl).then(x => x.blob())
-        ]).then(([mp3Blob, coverBlob]) => {
+        ]).then(([mp3Blob, coverBlob]) => new Promise<void>((resolve, reject) => {
             const downloaded: DownloadedTrack = {
                 key: track.key, mp3Blob, coverBlob,
                 bpm: track.bpm,
@@ -63,13 +78,37 @@ export class Downloads {
                 collaborators: track.collaborators
             }
             const transaction = this.#id.transaction(storeName, "readwrite")
+            transaction.onerror = () => reject(transaction.error)
+            transaction.oncomplete = () => {
+                this.#map.set(track.key, downloaded)
+                this.#notifier.notify({ type: "added", key: track.key })
+                resolve()
+            }
             transaction.objectStore(storeName).add(downloaded)
             transaction.commit()
-            return downloaded
-        }).then((downloaded: DownloadedTrack) => {
-            this.#map.set(track.key, downloaded)
-            console.debug(`${downloaded.name} added.`)
+        }))
+    }
+
+    async remove(track: Track): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            const transaction = this.#id.transaction(storeName, "readwrite")
+            transaction.onerror = () => reject(transaction.error)
+            transaction.oncomplete = () => {
+                this.#map.delete(track.key)
+                this.#notifier.notify({ type: "removed", key: track.key })
+                resolve()
+            }
+            transaction.objectStore(storeName).delete(track.key)
+            transaction.commit()
         })
+    }
+
+    tracks(): ReadonlyArray<Track> {
+        return Array.from(this.#map.values()).map(track => ({
+            ...track,
+            mp3Url: URL.createObjectURL(track.mp3Blob),
+            coverUrl: URL.createObjectURL(track.coverBlob)
+        }))
     }
 
     get(key: string): Option<DownloadedTrack> {return Option.wrap(this.#map.get(key))}
@@ -83,7 +122,6 @@ export class Downloads {
             cursorRequest.onsuccess = () => {
                 const result = cursorRequest.result
                 if (result === null) {
-                    for (const [id, track] of this.#map) {console.debug(id, track)}
                     resolve()
                 } else {
                     const downloaded = result.value as DownloadedTrack
