@@ -22,3 +22,13 @@ import { Terminator } from "@common/terminable.ts"
     document.body.appendChild(IconLibrary())
     document.body.appendChild(App({ lifeTime, playback, api }))
 })()
+
+console.debug(`PROD: ${import.meta.env.PROD}`)
+
+if (import.meta.env.PROD && "serviceWorker" in navigator) {
+    console.debug("register ServiceWorker...")
+    navigator.serviceWorker.register("./service-worker.js", { type: "module" })
+        .then((registration: ServiceWorkerRegistration) =>
+                console.debug("ServiceWorker registration successful with scope: ", registration.scope),
+            err => console.warn("ServiceWorker registration failed: ", err))
+}

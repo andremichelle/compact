@@ -5,8 +5,8 @@ import { int } from "@common/lang.ts"
 import { ListHeader } from "./ListHeader.tsx"
 import { Api, Track } from "../api.ts"
 import { TerminableOwner } from "@common/terminable.ts"
-import css from "./DownloadedTracks.sass?inline"
 import { Inject } from "@jsx/inject.ts"
+import css from "./DownloadedTracks.sass?inline"
 
 const className = Html.adoptStyleSheet(css, "downloaded-tracks")
 
@@ -20,7 +20,7 @@ export const DownloadedTracks = ({ lifeTime, api, playback }: DownloadedTracksPr
     const listRef = Inject.ref<HTMLDivElement>()
     const memoryLabel = Inject.text("")
     const section: HTMLElement = <section className={className}>
-        <ListHeader name="Downloaded" />
+        <ListHeader name="Offline Available Tracks" />
         <div ref={listRef} className="list">
             {api.downloads.tracks().map((track: Track, index: int) => (
                 <TrackListItem api={api}
