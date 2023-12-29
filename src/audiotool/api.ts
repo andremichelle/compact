@@ -1,5 +1,5 @@
 import { DownloadedTrack, Downloads } from "./downloads.ts"
-import { isDefined, Provider } from "@common/lang.ts"
+import { int, isDefined, Provider } from "@common/lang.ts"
 import { ApiV1 } from "./api.v1.ts"
 
 export const ApiUrl = "https://api.audiotool.com"
@@ -71,10 +71,22 @@ const mapV1Track = (track: ApiV1.TrackV1) => ({
     collaborators: track.collaborators.length === 0 && "user" in track ? [track.user as User] : track.collaborators
 })
 
+export const linkTracks = (tracks: ReadonlyArray<Track>, lastTrack?: Track): ReadonlyArray<Track> => {
+    if (isDefined(lastTrack)) {
+        lastTrack.next = tracks.at(0)
+    }
+    tracks.forEach((track: Track, index: int) => {
+        track.prev = tracks[index - 1] ?? lastTrack
+        track.next = tracks[index + 1]
+    })
+    return tracks
+}
+
 export class TrackListData {
     static async fetch(info: RequestInfo): Promise<TrackListData> {
         return ApiV1.fetchTracks(info)
-            .then(response => new TrackListData(response.name, response.tracks.map(mapV1Track), response.next))
+            .then(response =>
+                new TrackListData(response.name, linkTracks(response.tracks.map(mapV1Track)), response.next))
     }
 
     readonly #name: string
@@ -94,13 +106,16 @@ export class TrackListData {
     nextPage(): Promise<TrackListData> {
         return isDefined(this.#next)
             ? ApiV1.fetchTracks(this.#next)
-                .then(response => new TrackListData(response.name, response.tracks.map(mapV1Track), response.next))
+                .then(response => new TrackListData(
+                    response.name,
+                    linkTracks(response.tracks.map(mapV1Track), this.tracks.at(-1)),
+                    response.next))
             : Promise.reject("eof")
     }
 }
 
 export class Api {
-    #downloads: Downloads
+    readonly #downloads: Downloads
 
     constructor(downloads: Downloads) {this.#downloads = downloads}
 

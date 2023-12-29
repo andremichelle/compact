@@ -65,7 +65,9 @@ export const TrackListItem = ({ api, playback, track, index }: TrackListItemProp
             <a href={`#genre/${track.genreKey}`}
                className="genre"
                title={`Browse ${track.genreName}`}>{track.genreName}</a>
-            <button className="download" onclick={() => {api.downloads.toggle(track)}}>
+            <button className="download"
+                    onclick={() => {api.downloads.toggle(track)}}
+                    title="Download for offline usage">
                 <svg>
                     <use href="#downloaded"></use>
                 </svg>

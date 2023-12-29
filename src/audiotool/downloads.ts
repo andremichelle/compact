@@ -1,5 +1,5 @@
 import { Option } from "@common/option.ts"
-import { Track } from "./api.ts"
+import { linkTracks, Track } from "./api.ts"
 import { int, isDefined, Nullable, unitValue } from "@common/lang.ts"
 import { Notifier, Observer } from "@common/observers.ts"
 import { Subscription } from "@common/terminable.ts"
@@ -108,13 +108,13 @@ export class Downloads {
     }
 
     tracks(): ReadonlyArray<Track> {
-        return Array.from(this.#downloaded.values())
+        return linkTracks(Array.from(this.#downloaded.values())
             .sort((a, b) => a.added - b.added)
             .map(track => ({
                 ...track,
                 mp3Url: URL.createObjectURL(track.mp3Blob),
                 coverUrl: URL.createObjectURL(track.coverBlob)
-            }))
+            })))
     }
 
     numTracks(): int {return this.#downloaded.size}
@@ -150,6 +150,7 @@ export class Downloads {
     async #download(track: Track): Promise<void> {
         this.#notifier.notify({ type: "fetching", track, progress: 0.0 })
 
+        const added = Date.now()
         const key = track.key
         const abortController = new AbortController()
         const signal = abortController.signal
@@ -167,7 +168,7 @@ export class Downloads {
                 genreKey: track.genreKey,
                 genreName: track.genreName,
                 collaborators: track.collaborators,
-                added: Date.now()
+                added
             }
             return new Promise<void>((resolve, reject) => {
                 const transaction = this.#id.transaction(storeName, "readwrite")
