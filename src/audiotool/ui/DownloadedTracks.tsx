@@ -34,8 +34,9 @@ export const DownloadedTracks = ({ lifeTime, api, playback }: DownloadedTracksPr
     const updateMemoryLabel = () => memoryLabel.value = `memory usage: ${api.downloads.memory() >> 20}MB`
     updateMemoryLabel()
     lifeTime.own(api.downloads.subscribe(event => {
+        const element = listRef.get()
         if (event.type === "added") {
-            listRef.get().append(
+            element.append(
                 <TrackListItem api={api}
                                playback={playback}
                                track={event.track}
@@ -43,6 +44,7 @@ export const DownloadedTracks = ({ lifeTime, api, playback }: DownloadedTracksPr
             )
             updateMemoryLabel()
         } else if (event.type === "removed") {
+            element.querySelector(`[data-track-key="${event.track.key}"]`)?.remove()
             updateMemoryLabel()
         }
     }))

@@ -43,11 +43,8 @@ export const TrackListItem = ({ api, playback, track, index }: TrackListItemProp
             <img src={api.fetchCover(track)}
                  onclick={toggleTrackHandler} />
             <div className="names">
-                <div className="track" onclick={toggleTrackHandler}>
-                    <svg>
-                        <use href="#downloaded"></use>
-                    </svg>
-                    {track.name}
+                <div className="track">
+                    <span onclick={toggleTrackHandler}>{track.name}</span>
                 </div>
                 <AuthorList users={track.collaborators} />
             </div>
@@ -68,6 +65,11 @@ export const TrackListItem = ({ api, playback, track, index }: TrackListItemProp
             <a href={`#genre/${track.genreKey}`}
                className="genre"
                title={`Browse ${track.genreName}`}>{track.genreName}</a>
+            <button className="download" onclick={() => {api.downloads.toggle(track)}}>
+                <svg>
+                    <use href="#downloaded"></use>
+                </svg>
+            </button>
         </div>
     )
 }

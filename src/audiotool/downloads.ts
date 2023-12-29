@@ -63,6 +63,14 @@ export class Downloads {
 
     subscribe(observer: Observer<DownloadEvent>): Subscription {return this.#notifier.subscribe(observer)}
 
+    toggle(track: Track): void {
+        if (this.#downloaded.has(track.key) || this.#downloading.has(track.key)) {
+            this.remove(track).then()
+        } else {
+            this.download(track).then()
+        }
+    }
+
     async download(track: Track): Promise<void> {
         if (this.#downloaded.has(track.key) || this.#downloading.has(track.key)) {
             return Promise.reject("Already downloaded or downloading")
@@ -81,6 +89,7 @@ export class Downloads {
     async remove(track: Track): Promise<void> {
         const downloading = this.#downloading.get(track.key)
         if (isDefined(downloading)) {
+            console.debug(`"${track.name}" has been aborted`)
             downloading.abort("remove")
             return Promise.resolve()
         }
@@ -88,8 +97,9 @@ export class Downloads {
             const transaction = this.#id.transaction(storeName, "readwrite")
             transaction.onerror = () => reject(transaction.error)
             transaction.oncomplete = () => {
+                console.debug(`"${track.name}" has been removed`)
                 this.#downloaded.delete(track.key)
-                this.#notifier.notify({ type: "added", track })
+                this.#notifier.notify({ type: "removed", track })
                 resolve()
             }
             transaction.objectStore(storeName).delete(track.key)

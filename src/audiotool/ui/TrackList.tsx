@@ -4,9 +4,9 @@ import { TrackListItem } from "./TrackListItem.tsx"
 import { Playback } from "../playback.ts"
 import { Html } from "@ui/html.ts"
 import { int } from "@common/lang.ts"
-import css from "./TrackList.sass?inline"
 import { ListHeader } from "./ListHeader.tsx"
 import { Api, Track, TrackListData, TrackListRequest } from "../api.ts"
+import css from "./TrackList.sass?inline"
 
 const className = Html.adoptStyleSheet(css, "track-list")
 

@@ -12,6 +12,9 @@ import { Terminator } from "@common/terminable.ts"
     const lifeTime = new Terminator()
     window.onunload = () => lifeTime.terminate()
 
+    // Prevents the default context menu
+    window.addEventListener("contextmenu", event => event.preventDefault())
+
     const downloads = await Downloads.init()
     const api = new Api(downloads)
     const playback = new Playback(api)
