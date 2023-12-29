@@ -2,6 +2,9 @@
 
 ### A Mobile Friendly Audiotool Music Navigator
 
+* Can be installed as PWA (runs offline)
+* Download tracks to make them offline available
+
 ![screenshot.png](screenshot.png)
 
 [Open in browser ⏏︎](https://andremichelle.io/compact)
