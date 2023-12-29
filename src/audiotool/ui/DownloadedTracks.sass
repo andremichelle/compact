@@ -1,0 +1,25 @@
+@import ../../sass/mixin
+@import common
+
+component
+  padding: 1em 0
+  width: 100%
+  display: flex
+  flex-direction: column
+
+  > div.list
+    width: 100%
+    display: grid
+    grid-template-columns: repeat(2, max-content) minmax(0, 1fr) repeat(3, max-content)
+    align-items: center
+    row-gap: 0.5em
+    column-gap: 1em
+
+    &:empty:after
+      opacity: 0.5
+      content: "No tracks made offline available yet."
+
+  > div.memory
+    margin: 1.5em 0
+    font-size: 0.75em
+    text-align: right

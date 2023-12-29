@@ -1,6 +1,12 @@
 @import ../../sass/mixin
 @import common
 
+@keyframes fader
+  from
+    opacity: 0.25
+  to
+    opacity: 1.00
+
 component
   display: contents
 
@@ -23,6 +29,12 @@ component
 
       > span.index
         display: none
+
+  &.downloading > button.download
+    animation: fader 500ms infinite alternate
+
+  &.downloaded > button.download
+    color: green
 
   > button.play
     font-size: inherit
@@ -58,22 +70,28 @@ component
       overflow: hidden
       text-overflow: ellipsis
       color: $WhiteColor
-      cursor: pointer
+      display: flex
+      align-items: center
+      column-gap: 0.25em
 
-  > .genre
-    width: calc(100% - 0.5em)
-    height: 50%
+      > span
+        cursor: pointer
+        overflow: hidden
+        text-overflow: ellipsis
+
+  > button.download
+    padding: 0
+    appearance: none
+    border: none
+    background: none
     display: flex
-    align-items: center
-    justify-content: center
-    border-radius: 2em
-    padding: 0.25em 0.5em
-    color: black
-    background-color: rgba(white, 0.25)
-    text-decoration: none
+    color: gray
+    cursor: pointer
 
-    &:hover
-      background-color: white
+    > svg
+      width: 1.25em
+      height: 1.25em
+      pointer-events: none
 
   > .meta
     display: flex
@@ -111,3 +129,20 @@ component
 
       > span
         text-align: left
+
+  > .genre
+    font-size: 0.75em
+    width: calc(100% - 1em)
+    display: flex
+    align-items: center
+    justify-content: center
+    border-radius: 2px
+    white-space: nowrap
+    padding: 0.25em 0.5em
+    line-height: 100%
+    color: black
+    background-color: rgba(white, 0.25)
+    text-decoration: none
+
+    &:hover
+      background-color: white

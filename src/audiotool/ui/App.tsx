@@ -7,116 +7,122 @@ import { Player } from "./Player.tsx"
 import { TrackList } from "./TrackList.tsx"
 import { Playlists } from "./Playlists.tsx"
 import { ArtistCards } from "./ArtistCards.tsx"
-import { Page, router } from "../router.ts"
-import css from "./App.sass?inline"
+import { Root, Router } from "../router.ts"
 import { SearchPage } from "./SearchPage.tsx"
-import { ApiV1 } from "../api.v1.ts"
-
-const playback = new Playback()
-
-const url = new URL(location.href)
-const params = url.searchParams
-const track = Option.wrap(params.get("track"))
-track.ifSome(async (key: string) => {
-    params.delete("track")
-    history.replaceState(null, "", url)
-    playback.active = Option.wrap(await ApiV1.fetchTrack(key))
-})
-
-const artists = [
-    "sandburgen", "kepz", "kurpingspace2", "sumad", "dabrig", "1n50mn1ac", "brainwalker", "retrorhythm", "eliatrix",
-    "trancefreak12", "melancolia", "christian-chrom", "hipposandos", "markolmx", "ole", "chackoflakko", "sharkyyo",
-    "banterclaus", "jordynth", "ewan_mcculloch", "snowfire", "shakey63", "meastrostromea", "jetdarc", "skyboundzoo",
-    "borozo", "intracktion", "flying-baby-seal", "structure", "yafeelma", "nominal", "tophat", "fbs_cgman", "cgman",
-    "oscarollie", "almate", "offbeatninja123", "cuddlexdude", "foxyfennec", "daftwill", "jambam", "tottenhauser",
-    "amoeba", "opaqity", "808chunk", "joa", "trulsenstad", "tornsage", "infyuthsion", "nick123456", "beat123",
-    "frigolito", "xavrockbeats", "nmgbeats", "pandasparks", "crazydruminator", "dove", "musicmanpw", "trance10",
-    "vistamista", "djsolace1000", "naswalt", "mark-lewis_ndikintum", "synthinox", "traptaco", "dublion", "crashwarrior",
-    "farcio", "inxile412", "zerod", "bluedude", "leadenshrew", "questionone", "ola", "heisten", "universecosmic",
-    "no-worries-atmosphere", "rnzr", "nick123456", "physik", "zonemusic", "untamed", "theclient", "dracogotwings",
-    "tomderry", "themp20q", "djcandie", "tteerabeats", "jewan", "31pablo", "looper", "dillonco", "callkay",
-    "maddragon", "iwanbeflylo23", "martinstoj", "anotherevolution", "exist", "puppiez1006", "pimpmastaj"
-]
+import css from "./App.sass?inline"
+import { Api } from "../api.ts"
+import { artists } from "../artists.ts"
+import { DownloadedTracks } from "./DownloadedTracks.tsx"
+import { Navigation } from "./Navigation.tsx"
+import { TerminableOwner } from "@common/terminable.ts"
+import { Events } from "@common/events.ts"
 
 document.title = "audiotool compact・music browser"
 
-export const App = () => {
-    let page: Option<Page> = router(location.href)
+export type AppProps = {
+    lifeTime: TerminableOwner
+    playback: Playback,
+    api: Api
+}
+
+export const App = ({ lifeTime, playback, api }: AppProps) => {
+    const router = new Router()
+
+    router.readAndForgetTrackKeyFromSharedURL()
+        .ifSome(async (key: string) => playback.active = Option.wrap(await api.fetchTrack(key)))
+
     const trackListUpdater = Inject.ref<HotspotUpdater>()
-    window.onhashchange = (event: HashChangeEvent) => {
-        page = router(event.newURL)
-        trackListUpdater.get().update()
-    }
+    lifeTime.own(router.subscribe(() => trackListUpdater.get().update()))
+
+    // old school dom manipulation for list-player states
+    lifeTime.own(playback.subscribe(event => {
+        if (event.state === "changed") {
+            document.querySelectorAll("[data-track-key].active")
+                .forEach(element => element.classList.remove("active", "buffering", "playing", "error"))
+            event.track.ifSome(track => document.querySelectorAll(`[data-track-key="${track.key}"]`)
+                .forEach(element => {
+                    element.classList.add("active")
+                    element.firstElementChild?.scrollIntoView({ behavior: "smooth", block: "center" })
+                }))
+        } else if (event.state === "buffering") {
+            document.querySelectorAll("[data-track-key].active")
+                .forEach(element => element.classList.add("buffering"))
+        } else if (event.state === "playing") {
+            document.querySelectorAll("[data-track-key].active")
+                .forEach(element => {
+                    element.classList.remove("buffering")
+                    element.classList.add("playing")
+                })
+        } else if (event.state === "paused") {
+            document.querySelectorAll("[data-track-key].active")
+                .forEach(element => element.classList.remove("playing"))
+        }
+    }))
+
+    lifeTime.own(api.downloads.subscribe(event => {
+        if (event.type === "added") {
+            document.querySelectorAll(`[data-track-key="${event.track.key}"]`)
+                .forEach(element => {
+                    element.classList.remove("downloading")
+                    element.classList.add("downloaded")
+                })
+        } else if (event.type === "removed") {
+            document.querySelectorAll(`[data-track-key="${event.track.key}"]`)
+                .forEach(element => element.classList.remove("downloaded"))
+        } else if (event.type === "fetching") {
+            document.querySelectorAll(`[data-track-key="${event.track.key}"]`)
+                .forEach(element => element.classList.add("downloading"))
+        } else if (event.type === "cancelled") {
+            document.querySelectorAll(`[data-track-key="${event.track.key}"]`)
+                .forEach(element => element.classList.remove("downloading"))
+        }
+    }))
+
+    lifeTime.own(Events.subscribe(window, "keydown", (event: KeyboardEvent) => {
+        if (event.code === "ArrowRight") {
+            playback.nextTrack()
+        } else if (event.code === "ArrowLeft") {
+            playback.prevTrack()
+        } else if (event.code === "Space") {
+            if (event.target instanceof HTMLInputElement) {
+                return
+            }
+            event.preventDefault()
+            playback.togglePlay()
+        }
+    }))
 
     // keep them here to be persistent
     const artistCards = <ArtistCards keys={artists} />
-    const searchPage = <SearchPage playback={playback} />
+    const searchPage = <SearchPage api={api} playback={playback} />
     return (
         <main className={Html.adoptStyleSheet(css, "audiotool")}>
-            <Player playback={playback} />
+            <Player lifeTime={lifeTime} api={api} playback={playback} />
             <section className="content">
                 <Hotspot ref={trackListUpdater} render={() => {
-                    return page.match({
+                    return router.path.match({
                         none: () => artistCards,
-                        some: page => {
-                            if (page.type === "artists") {
+                        some: path => {
+                            if (path.root === Root.artists) {
                                 return artistCards
-                            } else if (page.type === "search") {
+                            } else if (path.root === Root.search) {
                                 return searchPage
-                            } else if (page.type === "tracks") {
-                                if (page.request.scope === "playlists") {
-                                    return <Playlists request={page.request} />
+                            } else if (path.root === Root.downloaded) {
+                                return <DownloadedTracks lifeTime={lifeTime} api={api} playback={playback} />
+                            } else if (path.root === Root.tracks) {
+                                if (path.request.scope === "playlists") {
+                                    return <Playlists request={path.request} />
                                 } else {
-                                    return <TrackList playback={playback} request={page.request} />
+                                    return <TrackList api={api}
+                                                      playback={playback}
+                                                      request={path.request} />
                                 }
                             }
                         }
                     })
                 }} />
             </section>
-            <footer>
-                <span>Coded by andré michelle・</span>
-                <a href="https://github.com/andremichelle/compact" target="github">source code</a>
-            </footer>
+            <Navigation lifeTime={lifeTime} router={router} playback={playback} />
         </main>
     )
 }
-
-// old school dom manipulation for list-player states
-playback.subscribe(event => {
-    if (event.state === "changed") {
-        document.querySelectorAll("[data-track-key].active")
-            .forEach(element => element.classList.remove("active", "buffering", "playing", "error"))
-        event.track.ifSome(track => document.querySelectorAll(`[data-track-key="${track.key}"]`)
-            .forEach(element => {
-                element.classList.add("active")
-                element.firstElementChild?.scrollIntoView({ behavior: "smooth", block: "center" })
-            }))
-    } else if (event.state === "buffering") {
-        document.querySelectorAll("[data-track-key].active")
-            .forEach(element => element.classList.add("buffering"))
-    } else if (event.state === "playing") {
-        document.querySelectorAll("[data-track-key].active")
-            .forEach(element => {
-                element.classList.remove("buffering")
-                element.classList.add("playing")
-            })
-    } else if (event.state === "paused") {
-        document.querySelectorAll("[data-track-key].active")
-            .forEach(element => element.classList.remove("playing"))
-    }
-})
-
-window.addEventListener("keydown", (event: KeyboardEvent) => {
-    if (event.code === "ArrowRight") {
-        playback.nextTrack()
-    } else if (event.code === "ArrowLeft") {
-        playback.prevTrack()
-    } else if (event.code === "Space") {
-        if (event.target instanceof HTMLInputElement) {
-            return
-        }
-        event.preventDefault()
-        playback.togglePlay()
-    }
-})

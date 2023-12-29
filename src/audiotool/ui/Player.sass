@@ -68,59 +68,25 @@ component
       justify-content: space-around
       overflow: hidden
 
-      > div.top
+      > div.meta
         display: flex
-        flex-direction: row
-        column-gap: 0.5em
+        flex-direction: column
+        row-gap: 0.25em
+        overflow: hidden
 
-        > div.meta
-          flex: 1 0 0
-          display: flex
-          flex-direction: column
-          row-gap: 0.25em
+        > div, a
+          flex: 0 0 1.25em
+
+          &:empty
+            border-radius: 0.125em
+            background-color: $PlaceHolderColor
+
+        > a.name
+          color: $WhiteColor
+          white-space: nowrap
           overflow: hidden
-
-          > div, a
-            flex: 0 0 1.25em
-
-            &:empty
-              border-radius: 0.125em
-              background-color: $PlaceHolderColor
-
-          > a.name
-            color: $WhiteColor
-            white-space: nowrap
-            overflow: hidden
-            text-overflow: ellipsis
-            text-decoration: none
-
-        > nav
-          display: flex
-          column-gap: 0.5em
-
-          > button
-            flex: 1 0 0
-            margin: 0
-            padding: 0
-            font-family: inherit
-            font-size: inherit
-            appearance: none
-            border: none
-            background: none
-            outline: none
-            color: $PlaceHolderColor
-            cursor: pointer
-
-            &:hover
-              color: rgba(white, 0.7)
-
-            &:active
-              color: white
-
-            > svg
-              width: 2em
-              height: 2em
-              pointer-events: none
+          text-overflow: ellipsis
+          text-decoration: none
 
       > div.time
         height: 1em
