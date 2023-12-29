@@ -41,10 +41,7 @@ export const TrackListItem = ({ api, playback, track, index }: TrackListItemProp
                 <span className="index">{index + 1}</span>
             </button>
             <img src={api.fetchCover(track)}
-                 onclick={(event: MouseEvent) =>
-                     event.shiftKey
-                         ? api.downloads.remove(track)
-                         : api.downloads.download(track)} />
+                 onclick={toggleTrackHandler} />
             <div className="names">
                 <div className="track" onclick={toggleTrackHandler}>
                     <svg>

@@ -109,6 +109,11 @@ export class Downloads {
 
     numTracks(): int {return this.#downloaded.size}
 
+    memory(): int {
+        return Array.from(this.#downloaded.values())
+            .reduce((bytes, track) => bytes + track.mp3Blob.size + track.coverBlob.size, 0)
+    }
+
     get(key: string): Option<DownloadedTrack> {return Option.wrap(this.#downloaded.get(key))}
 
     async #inventory(): Promise<void> {
