@@ -1,0 +1,41 @@
+@import common
+
+component
+  bottom: 0
+  position: sticky
+  display: flex
+  width: 100%
+  justify-content: center
+  background: $BlackColor
+  box-shadow: 0 -2em 2em 0 rgba(black, 0.2), 0 -0.125em 0.125em 0 rgba(black, 0.2)
+
+  > nav
+    margin: 1em 0
+    font-size: 1.25em
+    display: flex
+    column-gap: 0.5em
+    width: var(--inner-width)
+
+    > button
+      flex: 1 0 0
+      margin: 0
+      padding: 0
+      font-family: inherit
+      font-size: inherit
+      appearance: none
+      border: none
+      background: none
+      outline: none
+      color: $PlaceHolderColor
+      cursor: pointer
+
+      &:hover
+        color: rgba(white, 0.3)
+
+      &:active, &.active
+        color: rgba(white, 0.7)
+
+      > svg
+        width: 2em
+        height: 2em
+        pointer-events: none

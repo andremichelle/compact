@@ -68,7 +68,8 @@ export const TrackListItem = ({ api, playback, track, index }: TrackListItemProp
                     <span>{timespanToString(track.duration)}</span>
                 </div>
             </div>
-            <a href={`#genre/${track.genreKey}`} className="genre"
+            <a href={`#genre/${track.genreKey}`}
+               className="genre"
                title={`Browse ${track.genreName}`}>{track.genreName}</a>
         </div>
     )

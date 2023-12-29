@@ -94,9 +94,23 @@ export class Playback {
     set active(track: Option<Track>) {
         this.#unwatchAudio()
         this.#active = track
-        this.#active.ifSome(track => {
-            this.#audio.src = this.#api.fetchMP3(track)
-            this.#watchAudio(track)
+        this.#active.match({
+            none: () => {
+                const favLink = document.querySelector("link[rel=icon]")
+                if (favLink !== null) {
+                    favLink.setAttribute("type", "image/svg+xml")
+                    favLink.setAttribute("href", "favicon.svg")
+                }
+            },
+            some: track => {
+                const favLink = document.querySelector("link[rel=icon]")
+                if (favLink !== null) {
+                    favLink.setAttribute("type", "image/jpg")
+                    favLink.setAttribute("href", this.#api.fetchCover(track))
+                }
+                this.#audio.src = this.#api.fetchMP3(track)
+                this.#watchAudio(track)
+            }
         })
         this.#notify({ state: "changed", track })
     }
