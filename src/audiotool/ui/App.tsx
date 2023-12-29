@@ -61,19 +61,19 @@ export const App = ({ lifeTime, playback, api }: AppProps) => {
 
     lifeTime.own(api.downloads.subscribe(event => {
         if (event.type === "added") {
-            document.querySelectorAll(`[data-track-key="${event.key}"]`)
+            document.querySelectorAll(`[data-track-key="${event.track.key}"]`)
                 .forEach(element => {
                     element.classList.remove("downloading")
                     element.classList.add("downloaded")
                 })
         } else if (event.type === "removed") {
-            document.querySelectorAll(`[data-track-key="${event.key}"]`)
+            document.querySelectorAll(`[data-track-key="${event.track.key}"]`)
                 .forEach(element => element.classList.remove("downloaded"))
         } else if (event.type === "fetching") {
-            document.querySelectorAll(`[data-track-key="${event.key}"]`)
+            document.querySelectorAll(`[data-track-key="${event.track.key}"]`)
                 .forEach(element => element.classList.add("downloading"))
         } else if (event.type === "cancelled") {
-            document.querySelectorAll(`[data-track-key="${event.key}"]`)
+            document.querySelectorAll(`[data-track-key="${event.track.key}"]`)
                 .forEach(element => element.classList.remove("downloading"))
         }
     }))
@@ -108,7 +108,7 @@ export const App = ({ lifeTime, playback, api }: AppProps) => {
                             } else if (path.root === "search") {
                                 return searchPage
                             } else if (path.root === "downloaded") {
-                                return <DownloadedTracks api={api} playback={playback} />
+                                return <DownloadedTracks lifeTime={lifeTime} api={api} playback={playback} />
                             } else if (path.root === "tracks") {
                                 if (path.request.scope === "playlists") {
                                     return <Playlists request={path.request} />
