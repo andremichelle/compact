@@ -5,54 +5,54 @@ import { ApiV1 } from "./api.v1.ts"
 export const ApiUrl = "https://api.audiotool.com"
 
 export type User = {
-    key: string
-    name: string
+    readonly key: string
+    readonly name: string
 }
 
 export type Playlist = {
-    key: string
-    name: string
-    image: string
+    readonly key: string
+    readonly name: string
+    readonly image: string
 }
 
 export type ListRequest = TrackListRequest | PlayListsRequest
 
 export type TrackListRequest = {
-    scope: "tracks"
-    artistKey: string
-    fetch: Provider<Promise<TrackListData>>
+    readonly scope: "tracks"
+    readonly artistKey: string
+    readonly fetch: Provider<Promise<TrackListData>>
 } | {
-    scope: "playlist"
-    playlistKey: string
-    fetch: Provider<Promise<TrackListData>>
+    readonly scope: "playlist"
+    readonly playlistKey: string
+    readonly fetch: Provider<Promise<TrackListData>>
 } | {
-    scope: "genre"
-    genreKey: string
-    fetch: Provider<Promise<TrackListData>>
+    readonly scope: "genre"
+    readonly genreKey: string
+    readonly fetch: Provider<Promise<TrackListData>>
 }
 
 export type PlayListsRequest = {
-    scope: "playlists"
-    artistKey: string
-    fetch: Provider<Promise<PlaylistsResponse>>
+    readonly scope: "playlists"
+    readonly artistKey: string
+    readonly fetch: Provider<Promise<PlaylistsResponse>>
 }
 
 export type PlaylistsResponse = {
-    name: string
-    playlists: ReadonlyArray<Playlist>
+    readonly name: string
+    readonly playlists: ReadonlyArray<Playlist>
 }
 
 export type Track = {
-    key: string
-    name: string
-    bpm: number
-    duration: number
-    created: number
-    mp3Url: string
-    coverUrl: string
-    genreKey: string
-    genreName: string
-    collaborators: ReadonlyArray<User>
+    readonly key: string
+    readonly name: string
+    readonly bpm: number
+    readonly duration: number
+    readonly created: number
+    readonly mp3Url: string
+    readonly coverUrl: string
+    readonly genreKey: string
+    readonly genreName: string
+    readonly collaborators: ReadonlyArray<User>
 
     prev?: Track
     next?: Track

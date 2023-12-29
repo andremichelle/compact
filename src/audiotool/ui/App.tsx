@@ -72,6 +72,9 @@ export const App = ({ lifeTime, playback, api }: AppProps) => {
         } else if (event.type === "fetching") {
             document.querySelectorAll(`[data-track-key="${event.key}"]`)
                 .forEach(element => element.classList.add("downloading"))
+        } else if (event.type === "cancelled") {
+            document.querySelectorAll(`[data-track-key="${event.key}"]`)
+                .forEach(element => element.classList.remove("downloading"))
         }
     }))
 
