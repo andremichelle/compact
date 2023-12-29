@@ -7,7 +7,7 @@ import { Player } from "./Player.tsx"
 import { TrackList } from "./TrackList.tsx"
 import { Playlists } from "./Playlists.tsx"
 import { ArtistCards } from "./ArtistCards.tsx"
-import { Router } from "../router.ts"
+import { Root, Router } from "../router.ts"
 import { SearchPage } from "./SearchPage.tsx"
 import css from "./App.sass?inline"
 import { Api } from "../api.ts"
@@ -103,13 +103,13 @@ export const App = ({ lifeTime, playback, api }: AppProps) => {
                     return router.path.match({
                         none: () => artistCards,
                         some: path => {
-                            if (path.root === "artists") {
+                            if (path.root === Root.artists) {
                                 return artistCards
-                            } else if (path.root === "search") {
+                            } else if (path.root === Root.search) {
                                 return searchPage
-                            } else if (path.root === "downloaded") {
+                            } else if (path.root === Root.downloaded) {
                                 return <DownloadedTracks lifeTime={lifeTime} api={api} playback={playback} />
-                            } else if (path.root === "tracks") {
+                            } else if (path.root === Root.tracks) {
                                 if (path.request.scope === "playlists") {
                                     return <Playlists request={path.request} />
                                 } else {

@@ -4,14 +4,22 @@ import { ApiV1 } from "./api.v1.ts"
 import { Notifier, Observer } from "@common/observers.ts"
 import { Subscription } from "@common/terminable.ts"
 
+export const enum Root {
+    home = "",
+    search = "search",
+    downloaded = "downloaded",
+    artists = "artists",
+    tracks = "tracks"
+}
+
 export type Path = {
-    root: "search"
+    root: Root.search
 } | {
-    root: "downloaded"
+    root: Root.downloaded
 } | {
-    root: "artists"
+    root: Root.artists
 } | {
-    root: "tracks"
+    root: Root.tracks
     request: ListRequest
 }
 
@@ -49,16 +57,16 @@ export class Router {
 
     #resolve(url: string): Option<Path> {
         const path: ReadonlyArray<string> = new URL(url).hash.substring(1).split("/")
-        const scope = path[0]
+        const root = path[0]
         const key = path[1]
-        switch (scope) {
-            case "search":
-                return Option.wrap({ root: "search" })
-            case "downloaded":
-                return Option.wrap({ root: "downloaded" })
-            case "tracks":
+        switch (root) {
+            case Root.search:
+                return Option.wrap({ root })
+            case Root.downloaded:
+                return Option.wrap({ root })
+            case Root.tracks:
                 return Option.wrap({
-                    root: "tracks",
+                    root,
                     request: {
                         scope: "tracks",
                         artistKey: key,
@@ -68,7 +76,7 @@ export class Router {
                 })
             case "playlists":
                 return Option.wrap({
-                    root: "tracks",
+                    root: Root.tracks,
                     request: {
                         scope: "playlists",
                         artistKey: key,
@@ -77,7 +85,7 @@ export class Router {
                 })
             case "playlist":
                 return Option.wrap({
-                    root: "tracks",
+                    root: Root.tracks,
                     request: {
                         scope: "playlist",
                         playlistKey: key,
@@ -87,7 +95,7 @@ export class Router {
                 })
             case "genre":
                 return Option.wrap({
-                    root: "tracks",
+                    root: Root.tracks,
                     request: {
                         scope: "genre",
                         genreKey: key,

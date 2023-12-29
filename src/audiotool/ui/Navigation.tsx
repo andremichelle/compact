@@ -1,4 +1,4 @@
-import { Router } from "../router.ts"
+import { Root, Router } from "../router.ts"
 import { Playback } from "../playback.ts"
 import { Html } from "@ui/html.ts"
 import { Inject } from "@jsx/inject.ts"
@@ -19,7 +19,7 @@ export const Navigation = ({ lifeTime, router, playback }: NavigationProps) => {
         <section className={Html.adoptStyleSheet(css, "navigation")}>
             <nav>
                 <button ref={homeButton}
-                        onclick={() => location.hash = ""}
+                        onclick={() => location.hash = Root.home}
                         title="Home">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                         <path
@@ -28,7 +28,7 @@ export const Navigation = ({ lifeTime, router, playback }: NavigationProps) => {
                     </svg>
                 </button>
                 <button ref={searchButton}
-                        onclick={() => location.hash = "search"}
+                        onclick={() => location.hash = Root.search}
                         title="Search Audiotool">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                         <path
@@ -37,7 +37,7 @@ export const Navigation = ({ lifeTime, router, playback }: NavigationProps) => {
                     </svg>
                 </button>
                 <button ref={downloadedButton}
-                        onclick={() => location.hash = "downloaded"}
+                        onclick={() => location.hash = Root.downloaded}
                         title="Show downloaded tracks">
                     <svg>
                         <use href="#downloaded"></use>
@@ -58,9 +58,9 @@ export const Navigation = ({ lifeTime, router, playback }: NavigationProps) => {
         router.path.match({
             none: () => homeButton.get().classList.add("active"),
             some: path => {
-                if (path.root === "search") {
+                if (path.root === Root.search) {
                     searchButton.get().classList.add("active")
-                } else if (path.root === "downloaded") {
+                } else if (path.root === Root.downloaded) {
                     downloadedButton.get().classList.add("active")
                 }
             }
