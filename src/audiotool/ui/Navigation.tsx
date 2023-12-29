@@ -38,7 +38,7 @@ export const Navigation = ({ lifeTime, router, playback }: NavigationProps) => {
                 </button>
                 <button ref={downloadedButton}
                         onclick={() => location.hash = Root.downloaded}
-                        title="Show downloaded tracks">
+                        title="Show offline available tracks">
                     <svg>
                         <use href="#downloaded"></use>
                     </svg>
