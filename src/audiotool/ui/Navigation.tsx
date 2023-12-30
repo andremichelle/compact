@@ -4,14 +4,17 @@ import { Html } from "@ui/html.ts"
 import { Inject } from "@jsx/inject.ts"
 import { TerminableOwner } from "@common/terminable.ts"
 import css from "./Navigation.sass?inline"
+import { DownloadEvent, Downloads } from "../downloads.ts"
+import { Events } from "@common/events.ts"
 
 export type NavigationProps = {
     lifeTime: TerminableOwner
     router: Router
     playback: Playback
+    downloads: Downloads
 }
 
-export const Navigation = ({ lifeTime, router, playback }: NavigationProps) => {
+export const Navigation = ({ lifeTime, router, playback, downloads }: NavigationProps) => {
     const homeButton = Inject.ref<HTMLButtonElement>()
     const searchButton = Inject.ref<HTMLButtonElement>()
     const downloadedButton = Inject.ref<HTMLButtonElement>()
@@ -68,5 +71,16 @@ export const Navigation = ({ lifeTime, router, playback }: NavigationProps) => {
     }
     lifeTime.own(router.subscribe(observer))
     observer()
+
+    const button = downloadedButton.get()
+    lifeTime.own(downloads.subscribe((event: DownloadEvent) => {
+        if (event.type === "added") {
+            if (!button.classList.contains("highlight")) {
+                button.classList.add("highlight")
+            }
+        }
+    }))
+    lifeTime.own(Events.subscribe(button, "animationend", () => button.classList.remove("highlight")))
+
     return section
 }

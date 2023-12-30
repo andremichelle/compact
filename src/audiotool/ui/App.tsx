@@ -122,7 +122,7 @@ export const App = ({ lifeTime, playback, api }: AppProps) => {
                     })
                 }} />
             </section>
-            <Navigation lifeTime={lifeTime} router={router} playback={playback} />
+            <Navigation lifeTime={lifeTime} router={router} playback={playback} downloads={api.downloads} />
         </main>
     )
 }

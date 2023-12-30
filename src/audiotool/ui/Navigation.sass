@@ -1,5 +1,11 @@
 @import common
 
+@keyframes highlight
+  0%
+    color: green
+  100%
+    color: inherit
+
 component
   bottom: 0
   position: sticky
@@ -34,6 +40,9 @@ component
 
       &:active, &.active
         color: rgba(white, 0.7)
+
+      &.highlight
+        animation: highlight 500ms linear
 
       > svg
         width: 2em
