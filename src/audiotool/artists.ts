@@ -4,7 +4,7 @@ export const artists = [
     "banterclaus", "jordynth", "ewan_mcculloch", "snowfire", "shakey63", "meastrostromea", "jetdarc", "skyboundzoo",
     "borozo", "intracktion", "flying-baby-seal", "structure", "yafeelma", "nominal", "tophat", "fbs_cgman", "cgman",
     "oscarollie", "almate", "offbeatninja123", "cuddlexdude", "foxyfennec", "daftwill", "jambam", "tottenhauser",
-    "amoeba", "opaqity", "808chunk", "joa", "trulsenstad", "tornsage", "infyuthsion", "nick123456", "beat123",
+    "amoeba", "opaqity", "808chunk", "joa", "trulsenstad", "tornsage", "infyuthsion", "oedipax", "beat123",
     "frigolito", "xavrockbeats", "nmgbeats", "pandasparks", "crazydruminator", "dove", "musicmanpw", "trance10",
     "vistamista", "djsolace1000", "naswalt", "mark-lewis_ndikintum", "synthinox", "traptaco", "dublion", "crashwarrior",
     "farcio", "inxile412", "zerod", "bluedude", "leadenshrew", "questionone", "ola", "heisten", "universecosmic",
