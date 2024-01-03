@@ -1,4 +1,4 @@
-const CACHE_NAME = "audiotool-compact-cache-v1"
+const CACHE_NAME = "audiotool-compact-cache-v2"
 
 console.debug("sw", CACHE_NAME)
 
