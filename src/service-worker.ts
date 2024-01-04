@@ -1,4 +1,4 @@
-const CACHE_NAME = "audiotool-compact-cache-v2"
+const CACHE_NAME = "audiotool-compact-cache-v3"
 
 console.debug("sw", CACHE_NAME)
 
@@ -32,3 +32,22 @@ const fetchListener = (event: FetchEvent) => {
 }
 
 self.addEventListener("fetch", fetchListener as any)
+
+const activateListener = (event: ExtendableEvent) => {
+    event.waitUntil(
+        caches.keys().then((cacheNames) => {
+            console.debug(`Current cache: ${CACHE_NAME}`)
+            return Promise.all(
+                cacheNames.map((cacheName) => {
+                    console.debug(`Found cache: ${cacheName}`)
+                    if (cacheName.includes(CACHE_NAME)) {
+                        console.debug(`Delete cache: ${cacheName}`)
+                        return caches.delete(cacheName)
+                    }
+                })
+            )
+        })
+    )
+}
+
+self.addEventListener("activate", activateListener as any)
