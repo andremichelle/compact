@@ -40,7 +40,7 @@ const activateListener = (event: ExtendableEvent) => {
             return Promise.all(
                 cacheNames.map((cacheName) => {
                     console.debug(`Found cache: ${cacheName}`)
-                    if (cacheName.includes(CACHE_NAME)) {
+                    if (!cacheName.includes(CACHE_NAME)) {
                         console.debug(`Delete cache: ${cacheName}`)
                         return caches.delete(cacheName)
                     }
