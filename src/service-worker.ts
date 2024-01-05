@@ -1,6 +1,6 @@
-const CACHE_NAME = "audiotool-compact-cache-v3"
+const CACHE_NAME = "audiotool-compact-v1"
 
-console.debug("sw", CACHE_NAME)
+console.debug("sw-cache", CACHE_NAME)
 
 const installListener = (event: ExtendableEvent) => {
     console.debug("sw received install event.")

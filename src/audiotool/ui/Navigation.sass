@@ -44,6 +44,20 @@ component
       &.highlight
         animation: highlight 500ms linear
 
+      &[count]:after
+        content: attr(count)
+        vertical-align: top
+        color: $BlackColor
+        padding: 0.25em 0.5em
+        font-size: 0.75em
+        font-weight: bolder
+        border-radius: 2em
+        background-color: green
+        top: -0.75em
+        left: -0.25em
+        position: relative
+        box-shadow: 0 0 1em 0 rgba(green, 0.25)
+
       > svg
         width: 2em
         height: 2em

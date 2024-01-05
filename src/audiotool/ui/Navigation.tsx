@@ -18,6 +18,7 @@ export const Navigation = ({ lifeTime, router, playback, downloads }: Navigation
     const homeButton = Inject.ref<HTMLButtonElement>()
     const searchButton = Inject.ref<HTMLButtonElement>()
     const downloadedButton = Inject.ref<HTMLButtonElement>()
+    const downloadCount = Inject.attribute("")
     const section: HTMLElement = (
         <section className={Html.adoptStyleSheet(css, "navigation")}>
             <nav>
@@ -41,7 +42,8 @@ export const Navigation = ({ lifeTime, router, playback, downloads }: Navigation
                 </button>
                 <button ref={downloadedButton}
                         onclick={() => location.hash = Root.downloaded}
-                        title="Show offline available tracks">
+                        title="Show offline available tracks"
+                        count={downloadCount}>
                     <svg>
                         <use href="#downloaded"></use>
                     </svg>
@@ -78,9 +80,13 @@ export const Navigation = ({ lifeTime, router, playback, downloads }: Navigation
             if (!button.classList.contains("highlight")) {
                 button.classList.add("highlight")
             }
+            downloadCount.value = downloads.numTracks().toString()
+        } else if (event.type === "removed") {
+            downloadCount.value = downloads.numTracks().toString()
         }
     }))
     lifeTime.own(Events.subscribe(button, "animationend", () => button.classList.remove("highlight")))
+    downloadCount.value = downloads.numTracks().toString()
 
     return section
 }
