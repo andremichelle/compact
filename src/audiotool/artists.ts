@@ -9,6 +9,6 @@ export const artists = [
     "vistamista", "djsolace1000", "naswalt", "mark-lewis_ndikintum", "synthinox", "traptaco", "dublion", "crashwarrior",
     "farcio", "inxile412", "zerod", "bluedude", "leadenshrew", "questionone", "ola", "heisten", "universecosmic",
     "no-worries-atmosphere", "rnzr", "nick123456", "physik", "zonemusic", "untamed", "theclient", "dracogotwings",
-    "tomderry", "themp20q", "djcandie", "tteerabeats", "jewan", "31pablo", "looper", "dillonco", "callkay",
+    "tomderry", "themp20q", "bubblicious", "tteerabeats", "jewan", "31pablo", "looper", "dillonco", "callkay",
     "maddragon", "iwanbeflylo23", "martinstoj", "anotherevolution", "exist", "puppiez1006", "pimpmastaj"
 ]

@@ -1,9 +1,13 @@
+@import ../../sass/mixin
+
 component
   padding: 1em 0
-  max-width: 37vw
+  max-width: 50%
+  @include mobile
+    max-width: none
 
   p
-    font-size: 0.75em
+    font-size: 0.8em
     text-align: justify
 
   a

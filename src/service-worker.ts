@@ -1,6 +1,15 @@
-const CACHE_NAME = "audiotool-compact-v2"
+const CACHE_NAME = "compact-v1"
 
 console.debug("sw-cache", CACHE_NAME)
+caches.keys().then((cacheNames) => {
+    console.debug(`sw-caches: [${cacheNames.join(", ")}]`)
+    return Promise.all(cacheNames.map((cacheName) => {
+        if (!cacheName.includes(CACHE_NAME)) {
+            console.debug(`Delete cache: ${cacheName}`)
+            return caches.delete(cacheName)
+        }
+    })).then(() => console.debug("sw validated"), (reason) => console.debug(`sw failed to validate: '${reason}'`))
+})
 
 const installListener = (event: ExtendableEvent) => {
     console.debug("sw received install event.")
@@ -10,7 +19,7 @@ const installListener = (event: ExtendableEvent) => {
             .then(async (cache: Cache) => cache
                 .addAll(await fetch("./cache.json")
                     .then(x => x.json()) as Array<string>))
-            .then(() => console.debug("caching completed."))
+            .then(() => console.debug(`Created cache: '${CACHE_NAME}'`))
             .catch(reason => console.warn("caching failed", reason))
     )
 }
@@ -32,22 +41,3 @@ const fetchListener = (event: FetchEvent) => {
 }
 
 self.addEventListener("fetch", fetchListener as any)
-
-const activateListener = (event: ExtendableEvent) => {
-    console.debug(`Activated with cache: ${CACHE_NAME}`)
-    event.waitUntil(
-        caches.keys().then((cacheNames) => {
-            console.debug(`Found caches: '${cacheNames.join("|")}'`)
-            return Promise.all(
-                cacheNames.map((cacheName) => {
-                    if (!cacheName.includes(CACHE_NAME)) {
-                        console.debug(`Delete cache: ${cacheName}`)
-                        return caches.delete(cacheName)
-                    }
-                })
-            )
-        })
-    )
-}
-
-self.addEventListener("activate", activateListener as any)
