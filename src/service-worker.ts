@@ -1,4 +1,4 @@
-const CACHE_NAME = "v1.5"
+const CACHE_NAME = "v1.6"
 
 console.debug("sw-cache", CACHE_NAME)
 const validateCacheVersion = async () => {
