@@ -34,12 +34,12 @@ const fetchListener = (event: FetchEvent) => {
 self.addEventListener("fetch", fetchListener as any)
 
 const activateListener = (event: ExtendableEvent) => {
+    console.debug(`Activated with cache: ${CACHE_NAME}`)
     event.waitUntil(
         caches.keys().then((cacheNames) => {
-            console.debug(`Current cache: ${CACHE_NAME}`)
+            console.debug(`Found caches: '${cacheNames.join("|")}'`)
             return Promise.all(
                 cacheNames.map((cacheName) => {
-                    console.debug(`Found cache: ${cacheName}`)
                     if (!cacheName.includes(CACHE_NAME)) {
                         console.debug(`Delete cache: ${cacheName}`)
                         return caches.delete(cacheName)
