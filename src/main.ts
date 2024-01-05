@@ -28,8 +28,15 @@ console.debug(`PROD: ${import.meta.env.PROD}`)
 if (import.meta.env.PROD && "serviceWorker" in navigator) {
     console.debug("register ServiceWorker...")
     navigator.serviceWorker.register("./service-worker.js", { type: "module" })
-        .then((registration: ServiceWorkerRegistration) =>
-                console.debug("ServiceWorker registration successful with scope: ", registration.scope),
+        .then((registration: ServiceWorkerRegistration) => {
+                registration.addEventListener("message", (event: Event) => {
+                    console.log(`received from registration`, event)
+                    if ("data" in event && event.data === "cache-updated") {
+                        alert("New version detected. Please reload.")
+                    }
+                })
+                console.debug("ServiceWorker registration successful with scope: ", registration.scope)
+            },
             err => console.warn("ServiceWorker registration failed: ", err))
     navigator.serviceWorker.addEventListener("message", (event: MessageEvent) => {
         console.log(`received from sw`, event.data)
