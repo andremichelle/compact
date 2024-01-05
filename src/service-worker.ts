@@ -1,10 +1,10 @@
-const CACHE_NAME = "v1"
+const CACHE_NAME = "v1.0"
 
 console.debug("sw-cache", CACHE_NAME)
 caches.keys().then((cacheNames) => {
     console.debug(`sw-caches: [${cacheNames.join(", ")}]`)
     return Promise.all(cacheNames.map((cacheName) => {
-        if (!cacheName.includes(CACHE_NAME)) {
+        if (cacheName !== CACHE_NAME) {
             console.debug(`Delete cache: ${cacheName}`)
             return caches.delete(cacheName)
         }
