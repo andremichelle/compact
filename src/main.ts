@@ -6,8 +6,6 @@ import { Downloads } from "./audiotool/downloads.ts"
 import { Api } from "./audiotool/api.ts"
 import { Terminator } from "@common/terminable.ts"
 
-// TODO https://gist.github.com/v0lkan/c714a76de48420b264a7db917510f5d9
-
 (async () => {
     // A lifeTime is not really necessary at this level,
     // but this is the suggested pattern to terminate components.
@@ -33,4 +31,10 @@ if (import.meta.env.PROD && "serviceWorker" in navigator) {
         .then((registration: ServiceWorkerRegistration) =>
                 console.debug("ServiceWorker registration successful with scope: ", registration.scope),
             err => console.warn("ServiceWorker registration failed: ", err))
+    navigator.serviceWorker.addEventListener("message", (event: MessageEvent) => {
+        console.log(`received from sw`, event.data)
+        if (event.data === "cache-updated") {
+            alert("New version detected. Please reload.")
+        }
+    })
 }

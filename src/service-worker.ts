@@ -1,4 +1,4 @@
-const CACHE_NAME = "compact-v1"
+const CACHE_NAME = "v1"
 
 console.debug("sw-cache", CACHE_NAME)
 caches.keys().then((cacheNames) => {
@@ -8,7 +8,11 @@ caches.keys().then((cacheNames) => {
             console.debug(`Delete cache: ${cacheName}`)
             return caches.delete(cacheName)
         }
-    })).then(() => console.debug("sw validated"), (reason) => console.debug(`sw failed to validate: '${reason}'`))
+        return false
+    })).then((result: boolean[]) => {
+        console.debug("sw validated")
+        if (result.some(deleted => deleted)) {postMessage("cache-updated")}
+    }, (reason) => console.debug(`sw failed to validate: '${reason}'`))
 })
 
 const installListener = (event: ExtendableEvent) => {
