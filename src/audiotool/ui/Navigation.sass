@@ -34,6 +34,7 @@ component
       outline: none
       color: $PlaceHolderColor
       cursor: pointer
+      position: relative
 
       &:hover
         color: rgba(white, 0.3)
@@ -46,16 +47,15 @@ component
 
       &[count]:after
         content: attr(count)
-        vertical-align: top
         color: $BlackColor
         padding: 0.25em 0.5em
         font-size: 0.75em
         font-weight: bolder
         border-radius: 2em
         background-color: green
-        top: -0.75em
-        left: -0.25em
-        position: relative
+        top: -1em
+        left: calc(50% + 1.25em)
+        position: absolute
         box-shadow: 0 0 1em 0 rgba(green, 0.25)
 
       > svg

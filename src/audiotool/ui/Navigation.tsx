@@ -19,7 +19,6 @@ export const Navigation = ({ lifeTime, router, downloads }: NavigationProps) => 
     const searchButton = Inject.ref<HTMLButtonElement>()
     const downloadedButton = Inject.ref<HTMLButtonElement>()
     const aboutButton = Inject.ref<HTMLButtonElement>()
-    const downloadCount = Inject.attribute("")
     const section: HTMLElement = (
         <section className={Html.adoptStyleSheet(css, "navigation")}>
             <nav>
@@ -43,8 +42,7 @@ export const Navigation = ({ lifeTime, router, downloads }: NavigationProps) => 
                 </button>
                 <button ref={downloadedButton}
                         onclick={() => location.hash = Root.downloaded}
-                        title="Show offline available tracks"
-                        count={downloadCount}>
+                        title="Show offline available tracks">
                     <svg>
                         <use href="#downloaded"></use>
                     </svg>
@@ -65,7 +63,6 @@ export const Navigation = ({ lifeTime, router, downloads }: NavigationProps) => 
         router.path.match({
             none: () => homeButton.get().classList.add("active"),
             some: path => {
-                console.log(path)
                 if (path.root === Root.search) {
                     searchButton.get().classList.add("active")
                 } else if (path.root === Root.downloaded) {
@@ -80,18 +77,25 @@ export const Navigation = ({ lifeTime, router, downloads }: NavigationProps) => 
     observer()
 
     const button = downloadedButton.get()
+    const updateCount = () => {
+        const numTracks = downloads.numTracks()
+        if (numTracks === 0) {
+            button.removeAttribute("count")
+        } else {
+            button.setAttribute("count", numTracks.toString())
+        }
+    }
     lifeTime.own(downloads.subscribe((event: DownloadEvent) => {
         if (event.type === "added") {
             if (!button.classList.contains("highlight")) {
                 button.classList.add("highlight")
             }
-            downloadCount.value = downloads.numTracks().toString()
+            updateCount()
         } else if (event.type === "removed") {
-            downloadCount.value = downloads.numTracks().toString()
+            updateCount()
         }
     }))
+    updateCount()
     lifeTime.own(Events.subscribe(button, "animationend", () => button.classList.remove("highlight")))
-    downloadCount.value = downloads.numTracks().toString()
-
     return section
 }
