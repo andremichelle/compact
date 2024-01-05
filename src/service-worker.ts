@@ -26,13 +26,13 @@ const validateCacheVersion = async () => {
 const installListener = (event: ExtendableEvent) => {
     console.debug("sw received install event.")
     event.waitUntil(
-        caches
+        validateCacheVersion().finally(() => caches
             .open(CACHE_NAME)
             .then(async (cache: Cache) => cache
                 .addAll(await fetch("./cache.json")
                     .then(x => x.json()) as Array<string>))
             .then(() => console.debug(`Created cache: '${CACHE_NAME}'`))
-            .catch(reason => console.warn("caching failed", reason))
+            .catch(reason => console.warn("caching failed", reason)))
     )
 }
 
