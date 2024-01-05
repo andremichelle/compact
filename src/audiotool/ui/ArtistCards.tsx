@@ -16,7 +16,7 @@ export const ArtistCards = ({ keys }: ArtistCardsProps) => {
             const nameText = Inject.text("")
             const button: Element = (
                 <button onclick={() => location.hash = `tracks/${key}`}>
-                    <img src={imgSrc} width={128} loading="lazy" />
+                    <img src={imgSrc} width={128} />
                     <div>{nameText}</div>
                 </button>
             )
