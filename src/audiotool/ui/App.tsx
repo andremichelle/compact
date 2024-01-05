@@ -16,6 +16,7 @@ import { DownloadedTracks } from "./DownloadedTracks.tsx"
 import { Navigation } from "./Navigation.tsx"
 import { TerminableOwner } from "@common/terminable.ts"
 import { Events } from "@common/events.ts"
+import { About } from "./About.tsx"
 
 document.title = "audiotool compact・music browser"
 
@@ -97,7 +98,7 @@ export const App = ({ lifeTime, playback, api }: AppProps) => {
     const searchPage = <SearchPage api={api} playback={playback} />
     return (
         <main className={Html.adoptStyleSheet(css, "audiotool")}>
-            <Player lifeTime={lifeTime} api={api} playback={playback} />
+            <Player lifeTime={lifeTime} api={api} router={router} playback={playback} />
             <section className="content">
                 <Hotspot ref={trackListUpdater} render={() => {
                     return router.path.match({
@@ -105,6 +106,8 @@ export const App = ({ lifeTime, playback, api }: AppProps) => {
                         some: path => {
                             if (path.root === Root.artists) {
                                 return artistCards
+                            } else if (path.root === Root.about) {
+                                return About
                             } else if (path.root === Root.search) {
                                 return searchPage
                             } else if (path.root === Root.downloaded) {

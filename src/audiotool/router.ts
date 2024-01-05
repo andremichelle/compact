@@ -6,6 +6,7 @@ import { Subscription } from "@common/terminable.ts"
 
 export const enum Root {
     home = "",
+    about = "about",
     search = "search",
     downloaded = "downloaded",
     artists = "artists",
@@ -14,6 +15,8 @@ export const enum Root {
 
 export type Path = {
     root: Root.search
+} | {
+    root: Root.about
 } | {
     root: Root.downloaded
 } | {
@@ -63,6 +66,8 @@ export class Router {
             case Root.search:
                 return Option.wrap({ root })
             case Root.downloaded:
+                return Option.wrap({ root })
+            case Root.about:
                 return Option.wrap({ root })
             case Root.tracks:
                 return Option.wrap({
