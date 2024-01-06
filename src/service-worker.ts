@@ -1,4 +1,4 @@
-const CACHE_VERSION = "V.004"
+const CACHE_VERSION = "V.006"
 
 console.debug("sw-cache", CACHE_VERSION)
 const validateCacheVersion = async () => {
@@ -56,14 +56,7 @@ self.addEventListener("fetch", fetchListener as any)
 
 const activateListener = (event: ExtendableEvent) => {
     console.debug("sw activate")
-    event.waitUntil(
-        self.clients.claim()
-            .finally(() => validateCacheVersion()
-                .finally(() => self.clients.matchAll()
-                    .then(clients => clients.forEach(client => client.postMessage({
-                        type: "CACHE_VERSION",
-                        version: CACHE_VERSION
-                    }))))))
+    event.waitUntil(self.clients.claim().finally(() => validateCacheVersion()))
 }
 
 self.addEventListener("activate", activateListener as any)
