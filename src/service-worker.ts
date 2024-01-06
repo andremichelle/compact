@@ -1,12 +1,13 @@
-const CACHE_NAME = "v1.6"
+const CACHE_VERSION = "V.001"
 
-console.debug("sw-cache", CACHE_NAME)
+console.debug("sw-cache", CACHE_VERSION)
 const validateCacheVersion = async () => {
+    console.debug(`validate cache: ${CACHE_VERSION}`)
     return caches.keys().then((cacheNames) => {
         console.debug(`sw-caches: [${cacheNames.join(", ")}]`)
         return Promise.all(cacheNames.map((cacheName) => {
-            if (cacheName !== CACHE_NAME) {
-                console.debug(`Delete cache: ${cacheName}`)
+            if (cacheName !== CACHE_VERSION) {
+                console.debug(`Obsolete cache: ${cacheName}`)
                 return caches.delete(cacheName)
             }
             return false
@@ -25,15 +26,14 @@ const validateCacheVersion = async () => {
 
 const installListener = (event: ExtendableEvent) => {
     console.debug("sw received install event.")
-    event.waitUntil(
-        validateCacheVersion().finally(() => caches
-            .open(CACHE_NAME)
+    event.waitUntil(validateCacheVersion().finally(() =>
+        caches
+            .open(CACHE_VERSION)
             .then(async (cache: Cache) => cache
                 .addAll(await fetch("./cache.json")
                     .then(x => x.json()) as Array<string>))
-            .then(() => console.debug(`Created cache: '${CACHE_NAME}'`))
-            .catch(reason => console.warn("caching failed", reason)))
-    )
+            .then(() => console.debug(`Created cache: '${CACHE_VERSION}'`))
+            .catch(reason => console.warn("caching failed", reason))))
 }
 
 self.addEventListener("install", installListener as any)
@@ -56,9 +56,11 @@ self.addEventListener("fetch", fetchListener as any)
 
 const activateListener = (event: ExtendableEvent) => {
     console.debug("sw activate")
-    event.waitUntil(validateCacheVersion())
+    event.waitUntil(validateCacheVersion().finally(() => self.clients.matchAll()
+        .then(clients => clients.forEach(client => client.postMessage({
+            type: "CACHE_VERSION",
+            version: CACHE_VERSION
+        })))))
 }
 
 self.addEventListener("activate", activateListener as any)
-
-validateCacheVersion().then()

@@ -23,25 +23,24 @@ import { Terminator } from "@common/terminable.ts"
     document.body.appendChild(App({ lifeTime, playback, api }))
 })()
 
+const CACHE_VERSION = "V.001"
+
 console.debug(`PROD: ${import.meta.env.PROD}`)
+console.debug(`CACHE: ${CACHE_VERSION}`)
 
 if (import.meta.env.PROD && "serviceWorker" in navigator) {
     console.debug("register ServiceWorker...")
     navigator.serviceWorker.register("./service-worker.js", { type: "module" })
-        .then((registration: ServiceWorkerRegistration) => {
-                registration.addEventListener("message", (event: Event) => {
-                    console.log(`received from registration`, event)
-                    if ("data" in event && event.data === "cache-updated") {
-                        alert("New version detected. Please reload.")
-                    }
-                })
-                console.debug("ServiceWorker registration successful with scope: ", registration.scope)
-            },
+        .then((registration: ServiceWorkerRegistration) =>
+                console.debug("ServiceWorker registration successful with scope: ", registration.scope),
             err => console.warn("ServiceWorker registration failed: ", err))
     navigator.serviceWorker.addEventListener("message", (event: MessageEvent) => {
-        console.log(`received from sw`, event.data)
-        if (event.data === "cache-updated") {
-            alert("New version detected. Please reload.")
+        const data = event.data
+        console.log(`received data from sw`, data)
+        if ("type" in data && data.type === "CACHE_VERSION") {
+            if ("version" in data && CACHE_VERSION !== data.version) {
+                alert("New version detected. Please reload.")
+            }
         }
     })
 }
