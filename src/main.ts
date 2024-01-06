@@ -23,7 +23,7 @@ import { Terminator } from "@common/terminable.ts"
     document.body.appendChild(App({ lifeTime, playback, api }))
 })()
 
-const CACHE_VERSION = "V.001"
+const CACHE_VERSION = "V.004"
 
 console.debug(`PROD: ${import.meta.env.PROD}`)
 console.debug(`CACHE: ${CACHE_VERSION}`)
@@ -37,8 +37,8 @@ if (import.meta.env.PROD && "serviceWorker" in navigator) {
     navigator.serviceWorker.addEventListener("message", (event: MessageEvent) => {
         const data = event.data
         console.log(`received data from sw`, data)
-        if ("type" in data && data.type === "CACHE_VERSION") {
-            if ("version" in data && CACHE_VERSION !== data.version) {
+        if (data?.type === "CACHE_VERSION") {
+            if (CACHE_VERSION !== data?.version) {
                 alert("New version detected. Please reload.")
             }
         }
