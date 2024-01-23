@@ -1,8 +1,7 @@
-import { Inject } from "@jsx/inject.ts"
-import { Procedure } from "@common/lang.ts"
-import { Html } from "@ui/html.ts"
 import css from "./AuthorList.sass?inline"
 import { User } from "../api.ts"
+import { createElement, Inject } from "jet-tsx"
+import { Html, Procedure } from "jet-std"
 
 const className = Html.adoptStyleSheet(css, "author-list")
 

@@ -1,14 +1,12 @@
-import { Html } from "@ui/html.ts"
 import { Playback, PlaybackEvent } from "../playback.ts"
-import { Inject } from "@jsx/inject.ts"
-import { Procedure } from "@common/lang.ts"
 import { AuthorList } from "./AuthorList.tsx"
 import { PlaybackProgress } from "./PlaybackProgress.tsx"
 import { timespanToString } from "../time-conversion.ts"
 import { Api, User } from "../api.ts"
 import css from "./Player.sass?inline"
-import { TerminableOwner } from "@common/terminable.ts"
 import { Router } from "../router.ts"
+import { Html, Procedure, TerminableOwner } from "jet-std"
+import { createElement, Inject } from "jet-tsx"
 
 export type PlayerProps = {
     lifeTime: TerminableOwner
@@ -18,13 +16,13 @@ export type PlayerProps = {
 }
 
 export const Player = ({ lifeTime, api, router, playback }: PlayerProps) => {
-    const headerClasses = Inject.classes("cover")
-    const stateClasses = Inject.classes("state")
+    const headerClasses = Inject.classList("cover")
+    const stateClasses = Inject.classList("state")
     const coverHref = Inject.attribute(Html.EmptyGif)
     const profileLink = Inject.attribute("#")
-    const trackName = Inject.text("")
-    const playbackElapsed = Inject.text("00:00")
-    const playbackDuration = Inject.text("00:00")
+    const trackName = Inject.value("")
+    const playbackElapsed = Inject.value("00:00")
+    const playbackDuration = Inject.value("00:00")
     const populateUserList = Inject.ref<Procedure<ReadonlyArray<User>>>()
     const element = (
         <section className={Html.adoptStyleSheet(css, "player")}>

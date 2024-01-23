@@ -21,16 +21,11 @@
     "noFallthroughCasesInSwitch": true,
     "jsx": "preserve",
     "jsxFactory": "createElement",
+    "experimentalDecorators": true,
     "baseUrl": ".",
     "paths": {
-      "@jsx/*": [
-        "src/jsx/*"
-      ],
-      "@common/*": [
-        "src/common/*"
-      ],
-      "@ui/*": [
-        "src/ui/*"
+      "@/*": [
+        "src/*"
       ]
     }
   },

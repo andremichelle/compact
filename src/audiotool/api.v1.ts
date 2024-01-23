@@ -1,6 +1,5 @@
-import { int } from "@common/lang.ts"
-import { Html } from "@ui/html.ts"
 import { ApiUrl, PlaylistsResponse, User } from "./api.ts"
+import { Html, int } from "jet-std"
 
 export namespace ApiV1 {
     export const playMP3 = (track: ApiV1.TrackV1): string => `${ApiUrl}/track/${track.key}/play.mp3?ref=compact`

@@ -1,3 +1,5 @@
+import { createElement } from "jet-tsx"
+
 export const IconLibrary = () => (
     <svg id="icons-library" width="0" height="0" display="none">
         <defs>

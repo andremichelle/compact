@@ -1,11 +1,9 @@
 import { Root, Router } from "../router.ts"
 import { Playback } from "../playback.ts"
-import { Html } from "@ui/html.ts"
-import { Inject } from "@jsx/inject.ts"
-import { TerminableOwner } from "@common/terminable.ts"
 import css from "./Navigation.sass?inline"
 import { DownloadEvent, Downloads } from "../downloads.ts"
-import { Events } from "@common/events.ts"
+import { Events, Html, TerminableOwner } from "jet-std"
+import { createElement, Inject } from "jet-tsx"
 
 export type NavigationProps = {
     lifeTime: TerminableOwner

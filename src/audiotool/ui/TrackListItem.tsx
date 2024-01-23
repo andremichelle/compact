@@ -1,10 +1,10 @@
 import { AuthorList } from "./AuthorList.tsx"
 import { dateToString, timespanToString } from "../time-conversion.ts"
 import { Playback } from "../playback.ts"
-import { int } from "@common/lang.ts"
-import { Html } from "@ui/html.ts"
 import { Api, Track } from "../api.ts"
 import css from "./TrackListItem.sass?inline"
+import { Html, int } from "jet-std"
+import { createElement } from "jet-tsx"
 
 const className = Html.adoptStyleSheet(css, "track-list-item")
 

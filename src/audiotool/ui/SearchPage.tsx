@@ -1,9 +1,9 @@
-import { Html } from "@ui/html.ts"
-import { Inject } from "@jsx/inject.ts"
 import { ApiV2 } from "../api.v2.ts"
 import css from "./SearchPage.sass?inline"
 import { Playback } from "../playback.ts"
 import { Api } from "../api.ts"
+import { Html } from "jet-std"
+import { createElement, Inject } from "jet-tsx"
 
 const className = Html.adoptStyleSheet(css, "search-page")
 

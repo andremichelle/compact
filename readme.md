@@ -27,6 +27,6 @@ Tested on
 
 #### Toolchain
 
-* [JSX](https://github.com/andremichelle/jsx/)
+* [npm jet-packages](https://www.npmjs.com/settings/andremichelle/packages)
 * Vite
 * Sass

@@ -1,6 +1,6 @@
-import { Html } from "@ui/html.ts"
-import { Provider } from "@common/lang.ts"
 import css from "./FailureIndicator.sass?inline"
+import { createElement } from "jet-tsx"
+import { Html, Provider } from "jet-std"
 
 const className = Html.adoptStyleSheet(css, "failure-indicator")
 

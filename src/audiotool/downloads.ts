@@ -1,8 +1,5 @@
-import { Option } from "@common/option.ts"
 import { linkTracks, Track } from "./api.ts"
-import { int, isDefined, Nullable, unitValue } from "@common/lang.ts"
-import { Notifier, Observer } from "@common/observers.ts"
-import { Subscription } from "@common/terminable.ts"
+import { int, isDefined, Notifier, Nullable, Observer, Option, Subscription, unitValue } from "jet-std"
 
 export type DownloadedTrack = {
     key: string

@@ -1,6 +1,7 @@
 import { Playback } from "../playback.ts"
-import { Html } from "@ui/html.ts"
 import css from "./PlaybackProgress.sass?inline"
+import { Html } from "jet-std"
+import { createElement } from "jet-tsx"
 
 const className = Html.adoptStyleSheet(css, "playback-progress")
 

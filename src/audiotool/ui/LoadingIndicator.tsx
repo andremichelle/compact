@@ -1,5 +1,6 @@
-import { Html } from "@ui/html.ts"
 import css from "./LoadingIndicator.sass?inline"
+import { Html } from "jet-std"
+import { createElement } from "jet-tsx"
 
 const className = Html.adoptStyleSheet(css, "load-more-entries-indicator")
 

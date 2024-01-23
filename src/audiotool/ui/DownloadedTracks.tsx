@@ -1,12 +1,10 @@
 import { TrackListItem } from "./TrackListItem.tsx"
 import { Playback } from "../playback.ts"
-import { Html } from "@ui/html.ts"
-import { int } from "@common/lang.ts"
 import { ListHeader } from "./ListHeader.tsx"
 import { Api, Track } from "../api.ts"
-import { TerminableOwner } from "@common/terminable.ts"
-import { Inject } from "@jsx/inject.ts"
+import { createElement, Inject } from "jet-tsx"
 import css from "./DownloadedTracks.sass?inline"
+import { Html, int, TerminableOwner } from "jet-std"
 
 const className = Html.adoptStyleSheet(css, "downloaded-tracks")
 
@@ -18,7 +16,7 @@ export type DownloadedTracksProps = {
 
 export const DownloadedTracks = ({ lifeTime, api, playback }: DownloadedTracksProps) => {
     const listRef = Inject.ref<HTMLDivElement>()
-    const memoryLabel = Inject.text("")
+    const memoryLabel = Inject.value("")
     const section: HTMLElement = <section className={className}>
         <ListHeader name="Offline Available Tracks" />
         <div ref={listRef} className="list">

@@ -4,7 +4,7 @@ import { App } from "./audiotool/ui/App.tsx"
 import { Playback } from "./audiotool/playback.ts"
 import { Downloads } from "./audiotool/downloads.ts"
 import { Api } from "./audiotool/api.ts"
-import { Terminator } from "@common/terminable.ts"
+import { Terminator } from "jet-std"
 
 (async () => {
     // A lifeTime is not really necessary at this level,

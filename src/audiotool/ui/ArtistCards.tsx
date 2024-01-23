@@ -1,8 +1,8 @@
 import { ListHeader } from "./ListHeader.tsx"
-import { Html } from "@ui/html.ts"
 import css from "./ArtistCards.sass?inline"
 import { ApiV1 } from "../api.v1.ts"
-import { Inject } from "@jsx/inject.ts"
+import { Html } from "jet-std"
+import { createElement, Inject } from "jet-tsx"
 
 const className = Html.adoptStyleSheet(css, "artist-cards")
 
@@ -13,7 +13,7 @@ export const ArtistCards = ({ keys }: ArtistCardsProps) => {
         <ListHeader name="Popular Audiotool Artists" />
         {keys.toSorted(() => Math.sign(Math.random() * 2.0 - 1.0)).map((key: string) => {
             const imgSrc = Inject.attribute(Html.EmptyGif)
-            const nameText = Inject.text("")
+            const nameText = Inject.value("")
             const button: Element = (
                 <button onclick={() => location.hash = `tracks/${key}`}>
                     <img src={imgSrc} width={128} />

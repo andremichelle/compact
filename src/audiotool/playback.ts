@@ -1,8 +1,5 @@
-import { Option } from "@common/option.ts"
-import { Notifier } from "@common/observers.ts"
-import { isDefined, Procedure, unitValue } from "@common/lang.ts"
-import { Subscription } from "@common/terminable.ts"
 import { Api, Track } from "./api.ts"
+import { isDefined, Notifier, Option, Procedure, Subscription, unitValue } from "jet-std"
 
 export type PlaybackEvent = {
     state: "changed"

@@ -1,6 +1,6 @@
 import { DownloadedTrack, Downloads } from "./downloads.ts"
-import { int, isDefined, Provider } from "@common/lang.ts"
 import { ApiV1 } from "./api.v1.ts"
+import { int, isDefined, Provider } from "jet-std"
 
 export const ApiUrl = "https://api.audiotool.com"
 

@@ -1,4 +1,4 @@
-import { int } from "@common/lang.ts"
+import { int } from "jet-std"
 
 const API_URL = "https://api.audiotool.com/v2"
 const HEADERS = {
