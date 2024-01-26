@@ -1,6 +1,6 @@
 import css from "./About.sass?inline"
-import { createElement } from "jet-tsx"
 import { Html } from "jet-std"
+import { createElement } from "jet-tsx"
 
 export const About = (
     <section className={Html.adoptStyleSheet(css, "about")}>
@@ -18,7 +18,8 @@ export const About = (
             been utilized to fetch data from their servers.
         </p>
         <p>
-            Source code can be forked from <a href="https://github.com/andremichelle/compact/">github</a> | <a href="https://www.npmjs.com/settings/andremichelle/packages">npm packages</a>
+            Source code can be forked from <a href="https://github.com/andremichelle/compact/">github</a> | <a
+            href="https://www.npmjs.com/settings/andremichelle/packages">npm packages</a>
         </p>
         <p>
             Developer: <a href="https://hello.andremichelle.io/">andré michelle</a><br />

@@ -8,7 +8,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "jet-std": "^0.0.9",
+    "jet-std": "^0.0.15",
     "jet-tsx": "^0.0.14",
     "@types/node": "^20.10.5",
     "sass": "^1.69.5",
